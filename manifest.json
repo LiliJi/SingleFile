@@ -1,6 +1,6 @@
 {
-	"name": "SingleFile",
-	"author": "Gildas Lormeau",
+	"name": "Lingoport InContext",
+	"author": "Lili Ji",
 	"homepage_url": "https://github.com/gildas-lormeau/SingleFile",
 	"icons": {
 		"16": "extension/ui/resources/icon_16.png",
@@ -62,6 +62,7 @@
 			"extension/core/bg/core.js",
 			"extension/ui/bg/bg-ui.js",
 			"extension/ui/bg/ui-menu.js",
+			"lib/single-file/modules/jquery.min.js",
 			"extension/ui/bg/ui-button.js",
 			"lib/lazy/bg/bg-lazy-timeout.js",
 			"lib/single-file/vendor/css-minifier.js",
@@ -83,12 +84,13 @@
 		],
 		"persistent": false
 	},
+
 	"options_page": "extension/ui/pages/options.html",
-	"options_ui": {
-		"browser_style": true,
-		"page": "extension/ui/pages/options.html",
-		"open_in_tab": false
-	},
+  "options_ui": {
+    "page": "extension/ui/pages/options.html",
+    "chrome_style": true
+  },
+
 	"browser_action": {
 		"default_icon": "extension/ui/resources/icon_16.png",
 		"default_title": "__MSG_buttonDefaultTooltip__"
@@ -105,16 +107,14 @@
 	"permissions": [
 		"contextMenus",
 		"downloads",
-		"menus",
 		"storage",
 		"tabs",
-		"<all_urls>"
+		"menus",
+		"<all_urls>",
+		"http://*/",
+		"https://*/"
 	],
-	"applications": {
-		"gecko": {
-			"id": "{531906d3-e22f-4a6c-a102-8057b88a1a63}"
-		}
-	},
+
 	"incognito": "spanning",
 	"web_accessible_resources": [
 		"lib/lazy/web/web-lazy-loader-before.js",
