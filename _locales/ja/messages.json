@@ -8,8 +8,16 @@
         "description": "メニュー項目: 'SingleFile でページを保存'"
     },
     "menuSelectProfile": {
-        "message": "プロファイルを選択",
-        "description": "Menu entry: 'Select profile'"
+        "message": "規定（default）のプロファイルを選択",
+        "description": "Menu entry: 'Select the default profile'"
+    },
+    "menuUpdateRule": {
+        "message": "現在のルールのプロファイルを選択",
+        "description": "Menu entry: 'Select the profile of the current rule'"
+    },
+    "menuCreateDomainRule": {
+        "message": "現在のドメインのプロファイルを選択",
+        "description": "Menu entry: 'Select the profile of the current domain'"
     },
     "menuSaveSelection": {
         "message": "選択を保存",
@@ -123,19 +131,19 @@
         "message": "を開く（として保存する：ファイル名を確認するためのダイアログ）",
         "description": "オプションのページラベル: 'を開く（として保存する：ファイル名を確認するためのダイアログ）'"
     },
-    "optionConflictAction": {
+    "optionFilenameConflictAction": {
         "message": "ファイル名の競合を解決する",
         "description": "Options page label: 'filename conflict resolution'"
     },
-    "optionConflictActionUniquify": {
+    "optionFilenameConflictActionUniquify": {
         "message": "独自の名前を作成する",
         "description": "Value for 'filename conflict resolution' option: 'create a unique name'"
     },
-    "optionConflictActionOverwrite": {
+    "optionFilenameConflictActionOverwrite": {
         "message": "既存のファイルを上書きする",
         "description": "Value for 'filename conflict resolution' option: 'overwrite the existing file'"
     },
-    "optionConflictActionPrompt": {
+    "optionFilenameConflictActionPrompt": {
         "message": "名前を求めるプロンプト",
         "description": "Value for 'name conflict resolution' option: 'prompt for a name'"
     },
@@ -167,17 +175,29 @@
         "message": "オプション重複画像のグループ化",
         "description": "Options page label: 'group duplicate images together'"
     },
-    "optionLazyLoadImages": {
+    "optionLoadDeferredImages": {
         "message": "遅延画像を保存する",
         "description": "オプションのページラベル: '遅延画像を保存する'"
     },
-    "optionMaxLazyLoadImagesIdleTime": {
+    "optionLoadDeferredImagesMaxIdleTime": {
         "message": "最大アイドル時間（秒）",
         "description": "Options page label: 'maximum idle time (ms)'"
     },
     "optionRemoveAlternativeImages": {
         "message": "代替画面解像度用の画像を削除します",
         "description": "オプションのページラベル: '代替画面解像度用の画像を削除します'"
+    },
+    "optionsFontsSubTitle": {
+        "message": "フォント",
+        "description": "Options sub-title: 'Fonts'"
+    },
+    "optionRemoveUnusedFonts": {
+        "message": "未使用のフォントを削除する",
+        "description": "Options page label: 'remove unused fonts'"
+    },
+    "optionRemoveAlternativeFonts": {
+        "message": "代替フォントを削除する",
+        "description": "Options page label: 'remove alternative fonts'"
     },
     "optionsStylesheetsSubTitle": {
         "message": "スタイルシート",
@@ -189,11 +209,7 @@
     },
     "optionRemoveUnusedStyles": {
         "message": "未使用のスタイルを削除する",
-        "description": "オプションのページラベル: '未使用のスタイルを削除する'"
-    },
-    "optionRemoveAlternativeFonts": {
-        "message": "未使用のフォントと woff / otf への代替フォントを削除する",
-        "description": "オプションのページラベル: '未使用のフォントと woff / otf への代替フォントを削除する'"
+        "description": "Options page label: 'remove unused styles'"
     },
     "optionRemoveAlternativeMedias": {
         "message": "代替デバイス用のスタイルシートを画面に表示しない",
@@ -220,51 +236,59 @@
         "description": "オプションのサブタイトル: '自動保存'"
     },
     "optionsAutoSettingsSubTitle": {
-        "message": "Auto-settings rules",
+        "message": "自動設定のルール",
         "description": "Options sub-title: 'Auto-settings rules'"
+    },
+    "optionsDeleteDisplayedRulesConfirm": {
+        "message": "表示されているすべてのルールの削除を確認します",
+        "description": "Popup text 'Confirm deletion of all displayed rules'"
+    },
+    "optionsDeleteRulesTooltip": {
+        "message": "表示されているすべてのルールを削除する",
+        "description": "Popup text 'Delete all displayed rules'"
     },
     "optionsAutoSettingsUrl": {
         "message": "URL",
         "description": "Options label in the auto-settings rules: 'URL'"
     },
     "optionsAutoSettingsUrlPlaceholder": {
-        "message": "Type a complete or partial URL (e.g. example.com)",
+        "message": "完全または部分的な URL を入力します (例 example.com)",
         "description": "Placeholder in the Auto-settings rules: 'Type a complete or partial URL (e.g. example.com)'"
     },
     "optionsAutoSettingsProfile": {
-        "message": "Profile",
+        "message": "プロファイル",
         "description": "Options label in the Auto-settings rules: 'Profile'"
     },
     "optionsAutoSettingsAutoSaveProfile": {
-        "message": "Auto-save profile",
+        "message": "プロファイルの自動保存",
         "description": "Options label in the Auto-settings rules: 'Auto-save profile'"
     },
     "optionsAutoSettingsShowAllProfiles": {
-        "message": "display all profiles",
+        "message": "すべてのプロファイルを表示します",
         "description": "Options label in the Auto-settings rules: 'display all profiles'"
     },
     "optionsAutoSettingsShowAutoSaveProfile": {
-        "message": "display 'Auto-save profile' column",
+        "message": "「プロファイルの自動保存」列を表示する",
         "description": "Options label in the Auto-settings rules: 'display 'Auto-save profile' column'"
     },
     "optionsUpdateRuleTooltip": {
-        "message": "Update the rule",
+        "message": "ルールを更新する",
         "description": "Popup text 'Update the rule' in the options page"
     },
     "optionsDeleteRuleTooltip": {
-        "message": "Delete the rule",
+        "message": "ルールを削除する",
         "description": "Popup text 'Delete the rule' in the options page"
     },
     "optionsAddRuleTooltip": {
-        "message": "Add the rule",
+        "message": "ルールを追加する",
         "description": "Popup text 'Delete the rule' in the options page"
     },
     "optionsValidateChangesTooltip": {
-        "message": "Validate changes",
+        "message": "変更内容を検証します",
         "description": "Popup text 'Validate changes' in the options page"
     },
     "optionsDeleteRuleConfirm": {
-        "message": "Confirm deletion of the selected rule",
+        "message": "選択したルールの削除を確認する",
         "description": "Popup text 'Confirm deletion of the selected rule' in the options page"
     },
     "optionAutoSaveLoadOrUnload": {
@@ -323,6 +347,14 @@
         "message": "すべてのオプションのリセットを確認する",
         "description": "Popup text 'Confirm the reset of all options' in the options page"
     },
+    "optionsExportButton": {
+        "message": "エクスポート",
+        "description": "Options button: 'Export'"
+    },
+    "optionsImportButton": {
+        "message": "インポート",
+        "description": "Options button: 'Import'"
+    },
     "logPanelDeferredImages": {
         "message": "遅延画像",
         "description": "Label 'Deferred images' in the log panel"
@@ -344,7 +376,7 @@
         "description": "Label 'Default settings' of the default settings in the options page"
     },
     "profileDisabled": {
-        "message": "Disabled",
+        "message": "無効",
         "description": "Label 'Disabled' of the disabled profile name in the options page"
     },
     "profileAddButtonTooltip": {

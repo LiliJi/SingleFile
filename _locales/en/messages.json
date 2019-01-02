@@ -8,8 +8,16 @@
         "description": "Menu entry: 'Save page with SingleFile'"
     },
     "menuSelectProfile": {
-        "message": "Select profile",
-        "description": "Menu entry: 'Select profile'"
+        "message": "Select the default profile",
+        "description": "Menu entry: 'Select the default profile'"
+    },
+    "menuUpdateRule": {
+        "message": "Select the profile of the current rule",
+        "description": "Menu entry: 'Select the profile of the current rule'"
+    },
+    "menuCreateDomainRule": {
+        "message": "Select the profile of the current domain",
+        "description": "Menu entry: 'Select the profile of the current domain'"
     },
     "menuSaveSelection": {
         "message": "Save selection",
@@ -143,19 +151,19 @@
         "message": "open the \"Save as\" dialog to confirm the file name",
         "description": "Options page label: 'open the \"Save as\" dialog to confirm the file name'"
     },
-    "optionConflictAction": {
+    "optionFilenameConflictAction": {
         "message": "file name conflict resolution",
         "description": "Options page label: 'filename conflict resolution'"
     },
-    "optionConflictActionUniquify": {
+    "optionFilenameConflictActionUniquify": {
         "message": "create a unique name",
         "description": "Value for 'filename conflict resolution' option: 'create a unique name'"
     },
-    "optionConflictActionOverwrite": {
+    "optionFilenameConflictActionOverwrite": {
         "message": "overwrite the existing file",
         "description": "Value for 'filename conflict resolution' option: 'overwrite the existing file'"
     },
-    "optionConflictActionPrompt": {
+    "optionFilenameConflictActionPrompt": {
         "message": "prompt for a name",
         "description": "Value for 'name conflict resolution' option: 'prompt for a name'"
     },
@@ -187,17 +195,29 @@
         "message": "group duplicate images together",
         "description": "Options page label: 'group duplicate images together'"
     },
-    "optionLazyLoadImages": {
+    "optionLoadDeferredImages": {
         "message": "save deferred images",
         "description": "Options page label: 'save deferred images'"
     },
-    "optionMaxLazyLoadImagesIdleTime": {
+    "optionLoadDeferredImagesMaxIdleTime": {
         "message": "maximum idle time (ms)",
         "description": "Options page label: 'maximum idle time (ms)'"
     },
     "optionRemoveAlternativeImages": {
         "message": "remove images for alternative screen resolutions",
         "description": "Options page label: 'remove images for alternative screen resolutions'"
+    },
+    "optionsFontsSubTitle": {
+        "message": "Fonts",
+        "description": "Options sub-title: 'Fonts'"
+    },
+    "optionRemoveUnusedFonts": {
+        "message": "remove unused fonts",
+        "description": "Options page label: 'remove unused fonts'"
+    },
+    "optionRemoveAlternativeFonts": {
+        "message": "remove alternative fonts",
+        "description": "Options page label: 'remove alternative fonts'"
     },
     "optionsStylesheetsSubTitle": {
         "message": "Stylesheets",
@@ -210,10 +230,6 @@
     "optionRemoveUnusedStyles": {
         "message": "remove unused styles",
         "description": "Options page label: 'remove unused styles'"
-    },
-    "optionRemoveAlternativeFonts": {
-        "message": "remove alternative fonts to woff/otf and unused fonts",
-        "description": "Options page label: 'remove alternative fonts to woff/otf and unused fonts'"
     },
     "optionRemoveAlternativeMedias": {
         "message": "remove stylesheets for alternative devices to screens",
@@ -242,6 +258,14 @@
     "optionsAutoSettingsSubTitle": {
         "message": "Auto-settings rules",
         "description": "Options sub-title: 'Auto-settings rules'"
+    },
+    "optionsDeleteDisplayedRulesConfirm": {
+        "message": "Confirm deletion of all displayed rules",
+        "description": "Popup text 'Confirm deletion of all displayed rules'"
+    },
+    "optionsDeleteRulesTooltip": {
+        "message": "Delete all displayed rules",
+        "description": "Popup text 'Delete all displayed rules'"
     },
     "optionsAutoSettingsUrl": {
         "message": "URL",
@@ -342,6 +366,14 @@
     "optionsResetConfirm": {
         "message": "Confirm the reset of all options",
         "description": "Popup text 'Confirm the reset of all options' in the options page"
+    },
+    "optionsExportButton": {
+        "message": "Export",
+        "description": "Options button: 'Export'"
+    },
+    "optionsImportButton": {
+        "message": "Import",
+        "description": "Options button: 'Import'"
     },
     "logPanelDeferredImages": {
         "message": "Deferred images",

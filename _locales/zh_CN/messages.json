@@ -8,8 +8,16 @@
         "description": "菜单项: '使用 SingleFile 保存页面'"
     },
     "menuSelectProfile": {
-        "message": "选择配置文件",
-        "description": "Menu entry: 'Select profile'"
+        "message": "选择默认配置文件",
+        "description": "Menu entry: 'Select the default profile'"
+    },
+    "menuUpdateRule": {
+        "message": "选择当前规则的配置",
+        "description": "Menu entry: 'Select the profile of the current rule'"
+    },
+    "menuCreateDomainRule": {
+        "message": "选择当前域名的配置",
+        "description": "Menu entry: 'Select the profile of the current domain'"
     },
     "menuSaveSelection": {
         "message": "保存选中部分",
@@ -123,19 +131,19 @@
         "message": "打开“另存为”对话框以确认文件名",
         "description": "选项页标签: '打开“另存为”对话框以确认文件名'"
     },
-    "optionConflictAction": {
+    "optionFilenameConflictAction": {
         "message": "文件名冲突解决",
         "description": "Options page label: 'filename conflict resolution'"
     },
-    "optionConflictActionUniquify": {
+    "optionFilenameConflictActionUniquify": {
         "message": "创建为不冲突的名称",
         "description": "Value for 'filename conflict resolution' option: 'create a unique name'"
     },
-    "optionConflictActionOverwrite": {
+    "optionFilenameConflictActionOverwrite": {
         "message": "覆盖现有的文件",
         "description": "Value for 'filename conflict resolution' option: 'overwrite the existing file'"
     },
-    "optionConflictActionPrompt": {
+    "optionFilenameConflictActionPrompt": {
         "message": "询问新名称",
         "description": "Value for 'name conflict resolution' option: 'prompt for a name'"
     },
@@ -167,17 +175,29 @@
         "message": "重复图像合并",
         "description": "选项页标签: '重复图像合并'"
     },
-    "optionLazyLoadImages": {
+    "optionLoadDeferredImages": {
         "message": "保存延迟加载的图像",
         "description": "选项页标签: '保存延迟加载的图像'"
     },
-    "optionMaxLazyLoadImagesIdleTime": {
+    "optionLoadDeferredImagesMaxIdleTime": {
         "message": "最长空闲时间（毫秒）",
         "description": "Options page label: 'maximum idle time (ms)'"
     },
     "optionRemoveAlternativeImages": {
         "message": "移除备用分辨率的图像",
         "description": "选项页标签: '移除备用分辨率的图像'"
+    },
+    "optionsFontsSubTitle": {
+        "message": "字体",
+        "description": "Options sub-title: 'Fonts'"
+    },
+    "optionRemoveUnusedFonts": {
+        "message": "移除未使用的字体",
+        "description": "Options page label: 'remove unused fonts'"
+    },
+    "optionRemoveAlternativeFonts": {
+        "message": "移除备用的字体",
+        "description": "Options page label: 'remove alternative fonts'"
     },
     "optionsStylesheetsSubTitle": {
         "message": "样式表",
@@ -190,10 +210,6 @@
     "optionRemoveUnusedStyles": {
         "message": "移除未使用的样式",
         "description": "选项页标签: '移除未使用的样式'"
-    },
-    "optionRemoveAlternativeFonts": {
-        "message": "移除 woff/otf 备用字体以及未使用的字体",
-        "description": "选项页标签: '移除 woff/otf 备用字体以及未使用的字体'"
     },
     "optionRemoveAlternativeMedias": {
         "message": "移除其他设备分辨率的样式表",
@@ -218,6 +234,14 @@
     "optionsAutoSaveSubTitle": {
         "message": "自动保存",
         "description": "选项页副标题: '自动保存'"
+    },
+    "optionsDeleteDisplayedRulesConfirm": {
+        "message": "确认移除所有已显示规则",
+        "description": "Popup text 'Confirm deletion of all displayed rules'"
+    },
+    "optionsDeleteRulesTooltip": {
+        "message": "移除所有已显示规则",
+        "description": "Popup text 'Delete all displayed rules'"
     },
     "optionsAutoSettingsSubTitle": {
         "message": "自动设置",
@@ -322,6 +346,14 @@
     "optionsResetConfirm": {
         "message": "确认重置所有选项",
         "description": "Popup text 'Confirm the reset of all options' in the options page"
+    },
+    "optionsExportButton": {
+        "message": "导出",
+        "description": "Options button: 'Export'"
+    },
+    "optionsImportButton": {
+        "message": "导入",
+        "description": "Options button: 'Import'"
     },
     "logPanelDeferredImages": {
         "message": "延迟加载的图像",

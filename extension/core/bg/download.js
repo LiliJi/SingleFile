@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Gildas Lormeau
+ * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
  * 
  * This file is part of SingleFile.
@@ -22,16 +22,31 @@
 
 singlefile.download = (() => {
 
+	const partialContents = new Map();
+
 	browser.runtime.onMessage.addListener((request, sender) => {
 		if (request.download) {
 			try {
-				if (request.content) {
+				if (request.truncated) {
+					let partialContent = partialContents.get(sender.tab.id);
+					if (!partialContent) {
+						partialContent = [];
+						partialContents.set(sender.tab.id, partialContent);
+					}
+					partialContent.push(request.content);
+					if (request.finished) {
+						partialContents.delete(sender.tab.id);
+						request.url = URL.createObjectURL(new Blob(partialContent, { type: "text/html" }));
+					} else {
+						return Promise.resolve({});
+					}
+				} else if (request.content) {
 					request.url = URL.createObjectURL(new Blob([request.content], { type: "text/html" }));
 				}
-				return downloadPage(request, { confirmFilename: request.confirmFilename, incognito: sender.tab.incognito, conflictAction: request.conflictAction })
+				return downloadPage(request, { confirmFilename: request.confirmFilename, incognito: sender.tab.incognito, conflictAction: request.filenameConflictAction })
 					.catch(error => {
 						if (error.message && error.message.includes("'incognito'")) {
-							return downloadPage(request, { confirmFilename: request.confirmFilename, conflictAction: request.conflictAction });
+							return downloadPage(request, { confirmFilename: request.confirmFilename, conflictAction: request.filenameConflictAction });
 						} else {
 							return { notSupported: true };
 						}
@@ -49,7 +64,7 @@ singlefile.download = (() => {
 			url: page.url,
 			saveAs: options.confirmFilename,
 			filename: page.filename,
-			conflictAction: options.conflictAction
+			conflictAction: options.filenameConflictAction
 		};
 		if (options.incognito) {
 			downloadInfo.incognito = true;
