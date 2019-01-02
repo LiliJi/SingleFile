@@ -7,7 +7,7 @@
 		"48": "extension/ui/resources/icon_48.png",
 		"128": "extension/ui/resources/icon_128.png"
 	},
-	"version": "1.9.9",
+	"version": "1.9.25",
 	"description": "__MSG_extensionDescription__",
 	"content_scripts": [
 		{
@@ -18,12 +18,10 @@
 			"js": [
 				"lib/hooks/hooks-frame.js",
 				"lib/browser-polyfill/chrome-browser-polyfill.js",
-				"extension/index.js",
 				"lib/single-file/util/doc-helper.js",
 				"lib/single-file/util/timeout.js",
-				"lib/fetch/content/fetch.js",
-				"lib/lazy/content/content-lazy-loader.js",
 				"lib/frame-tree/frame-tree.js",
+				"extension/index.js",
 				"extension/core/content/content-frame.js"
 			],
 			"all_frames": true,

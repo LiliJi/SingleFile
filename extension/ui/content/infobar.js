@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Gildas Lormeau
+ * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
  * 
  * This file is part of SingleFile.
@@ -44,7 +44,7 @@ this.singlefile.infobar = this.singlefile.infobar || (() => {
 		if (singleFileComment) {
 			const info = singleFileComment.textContent.split("\n");
 			const [, , url, saveDate, ...infoData] = info;
-			const options = await browser.runtime.sendMessage({ getOptions: true });
+			const options = await browser.runtime.sendMessage({ getOptions: true, url });
 			if (options.displayInfobar) {
 				initInfobar(url, saveDate, infoData);
 			}

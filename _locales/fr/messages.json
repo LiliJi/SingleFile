@@ -8,8 +8,16 @@
         "description": "Menu entry: 'Save page with SingleFile'"
     },
     "menuSelectProfile": {
-        "message": "Sélectionner le profil",
-        "description": "Menu entry: 'Select profile'"
+        "message": "Sélectionner le profil par défaut",
+        "description": "Menu entry: 'Select the default profile'"
+    },
+    "menuUpdateRule": {
+        "message": "Sélectionner le profil de la règle courante",
+        "description": "Menu entry: 'Select the profile of the current rule'"
+    },
+    "menuCreateDomainRule": {
+        "message": "Sélectionner le profil du domaine courant",
+        "description": "Menu entry: 'Select the profile of the current domain'"
     },
     "menuSaveSelection": {
         "message": "Sauver la sélection",
@@ -123,19 +131,19 @@
         "message": "ouvrir la boite de dialogue \"Sauver sous\" pour confimer le nom de fichier",
         "description": "Options page label: 'open the \"Save as\" dialog to confirm the file name'"
     },
-    "optionConflictAction": {
+    "optionFilenameConflictAction": {
         "message": "résolution de conflit de noms",
         "description": "Options page label: 'filename conflict resolution'"
     },
-    "optionConflictActionUniquify": {
+    "optionFilenameConflictActionUniquify": {
         "message": "créer un nom unique",
         "description": "Value for 'filename conflict resolution' option: 'create a unique filename'"
     },
-    "optionConflictActionOverwrite": {
+    "optionFilenameConflictActionOverwrite": {
         "message": "écraser le fichier existant",
         "description": "Value for 'filename conflict resolution' option: 'overwrite the existing file'"
     },
-    "optionConflictActionPrompt": {
+    "optionFilenameConflictActionPrompt": {
         "message": "demander un nom de fichier",
         "description": "Value for 'filename conflict resolution' option: 'prompt for a filename'"
     },
@@ -167,17 +175,29 @@
         "message": "regrouper les images dupliquées",
         "description": "Options page label: 'group duplicate images together'"
     },
-    "optionLazyLoadImages": {
+    "optionLoadDeferredImages": {
         "message": "sauver les images chargées de manière différées",
         "description": "Options page label: 'save deferred images'"
     },
-    "optionMaxLazyLoadImagesIdleTime": {
+    "optionLoadDeferredImagesMaxIdleTime": {
         "message": "temps d'inactivité maximal (ms)",
         "description": "Options page label: 'maximum idle time (ms)'"
     },
     "optionRemoveAlternativeImages": {
         "message": "supprimer les images pour des résolutions d'écran alternatives",
         "description": "Options page label: 'remove images for alternative screen resolutions'"
+    },
+    "optionsFontsSubTitle": {
+        "message": "Polices de caractère",
+        "description": "Options sub-title: 'Fonts'"
+    },
+    "optionRemoveUnusedFonts": {
+        "message": "supprimer les polices de caractère inutilisées",
+        "description": "Options page label: 'remove unused fonts'"
+    },
+    "optionRemoveAlternativeFonts": {
+        "message": "supprimer les polices de caractère alternatives",
+        "description": "Options page label: 'remove alternative fonts'"
     },
     "optionsStylesheetsSubTitle": {
         "message": "Feuilles de style",
@@ -190,10 +210,6 @@
     "optionRemoveUnusedStyles": {
         "message": "supprimer les styles inutilisés",
         "description": "Options page label: 'remove unused styles'"
-    },
-    "optionRemoveAlternativeFonts": {
-        "message": "supprimer les polices de caractère autres que woff/otf et les polices inutilisées",
-        "description": "Options page label: 'remove alternative fonts to woff/otf and unused fonts'"
     },
     "optionRemoveAlternativeMedias": {
         "message": "supprimer les feuilles de styles pour les appareils autres que des écrans",
@@ -222,6 +238,14 @@
     "optionsAutoSettingsSubTitle": {
         "message": "Règles d'auto-configuration",
         "description": "Options sub-title: 'Auto-settings rules'"
+    },
+    "optionsDeleteDisplayedRulesConfirm": {
+        "message": "Confirmez la suppression de toutes les règles affichées",
+        "description": "Popup text 'Confirm deletion of all displayed rules'"
+    },
+    "optionsDeleteRulesTooltip": {
+        "message": "Supprimer toutes les règles affichées",
+        "description": "Popup text 'Delete all displayed rules'"
     },
     "optionsAutoSettingsUrl": {
         "message": "URL",
@@ -323,6 +347,14 @@
         "message": "Confirmez la remise à zéro de toutes les options",
         "description": "Popup text 'Confirm the reset of all options' in the options page"
     },
+    "optionsExportButton": {
+        "message": "Exporter",
+        "description": "Options button: 'Export'"
+    },
+    "optionsImportButton": {
+        "message": "Importer",
+        "description": "Options button: 'Import'"
+    },
     "logPanelDeferredImages": {
         "message": "Images différées",
         "description": "Label 'Deferred images' in the log panel"
@@ -332,7 +364,7 @@
         "description": "Label 'Frame contents' in the log panel"
     },
     "logPanelStep": {
-        "message": "Etape",
+        "message": "Étape",
         "description": "Label 'Step' (for 'Step x / 4') in the log panel"
     },
     "logPanelWidth": {

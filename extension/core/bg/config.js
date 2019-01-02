@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Gildas Lormeau
+ * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
  * 
  * This file is part of SingleFile.
@@ -18,29 +18,30 @@
  *   along with SingleFile.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser, singlefile */
+/* global browser, singlefile, URL, Blob, FileReader */
 
 singlefile.config = (() => {
 
 	const DEFAULT_PROFILE_NAME = "__Default_Settings__";
 	const DISABLED_PROFILE_NAME = "__Disabled_Settings__";
+	const REGEXP_RULE_PREFIX = "regexp:";
 
 	const DEFAULT_CONFIG = {
 		removeHiddenElements: true,
 		removeUnusedStyles: true,
+		removeUnusedFonts: true,
 		removeFrames: false,
 		removeImports: true,
 		removeScripts: true,
-		rawDocument: false,
 		compressHTML: true,
 		compressCSS: true,
-		lazyLoadImages: true,
-		maxLazyLoadImagesIdleTime: 1500,
+		loadDeferredImages: true,
+		loadDeferredImagesMaxIdleTime: 1500,
 		filenameTemplate: "{page-title} ({date-iso} {time-locale}).html",
 		infobarTemplate: "",
-		confirmInfobar: false,
+		confirmInfobarContent: false,
 		confirmFilename: false,
-		conflictAction: "uniquify",
+		filenameConflictAction: "uniquify",
 		contextMenuEnabled: true,
 		shadowEnabled: true,
 		maxResourceSizeEnabled: false,
@@ -64,132 +65,97 @@ singlefile.config = (() => {
 	let pendingUpgradePromise = upgrade();
 	browser.runtime.onMessage.addListener(request => {
 		if (request.getOptions) {
-			return getOptions();
+			return getUrlOptions(request.url);
 		}
 	});
 
 	async function upgrade() {
 		const config = await browser.storage.local.get();
-		const defaultConfig = config;
 		if (!config.profiles) {
+			const defaultConfig = config;
 			delete defaultConfig.tabsData;
 			applyUpgrade(defaultConfig);
-			const config = { profiles: {}, rules: [] };
-			config.profiles[DEFAULT_PROFILE_NAME] = defaultConfig;
+			const newConfig = { profiles: {}, rules: [] };
+			newConfig.profiles[DEFAULT_PROFILE_NAME] = defaultConfig;
 			browser.storage.local.remove(Object.keys(DEFAULT_CONFIG));
-			return browser.storage.local.set(config);
+			await browser.storage.local.set(newConfig);
 		} else {
 			if (!config.rules) {
 				config.rules = [];
 			}
 			Object.keys(config.profiles).forEach(profileName => applyUpgrade(config.profiles[profileName]));
 			await browser.storage.local.remove(["profiles", "defaultProfile", "rules"]);
-			return browser.storage.local.set({ profiles: config.profiles, rules: config.rules });
+			await browser.storage.local.set({ profiles: config.profiles, rules: config.rules });
 		}
 	}
 
 	function applyUpgrade(config) {
-		if (config.removeScripts === undefined) {
-			config.removeScripts = true;
-		}
-		config.compressHTML = config.compressCSS = config.compress;
-		if (config.compressCSS === undefined) {
-			config.compressCSS = true;
-		}
-		if (config.compressHTML === undefined) {
-			config.compressHTML = true;
-		}
-		if (config.lazyLoadImages === undefined) {
-			config.lazyLoadImages = true;
-		}
-		if (config.contextMenuEnabled === undefined) {
-			config.contextMenuEnabled = true;
-		}
-		if (config.filenameTemplate === undefined) {
-			if (config.appendSaveDate || config.appendSaveDate === undefined) {
-				config.filenameTemplate = DEFAULT_CONFIG.filenameTemplate;
-			} else {
-				config.filenameTemplate = "{page-title}.html";
-			}
-			delete config.appendSaveDate;
-		}
-		if (config.infobarTemplate === undefined) {
-			config.infobarTemplate = "";
-		}
-		if (config.removeImports === undefined) {
-			config.removeImports = true;
-		}
-		if (config.shadowEnabled === undefined) {
-			config.shadowEnabled = true;
-		}
-		if (config.maxResourceSize === undefined) {
-			config.maxResourceSize = DEFAULT_CONFIG.maxResourceSize;
-		}
-		if (config.maxResourceSize === 0) {
-			config.maxResourceSize = 1;
-		}
-		if (config.removeUnusedStyles === undefined || config.removeUnusedCSSRules) {
-			delete config.removeUnusedCSSRules;
-			config.removeUnusedStyles = true;
-		}
-		if (config.removeAudioSrc === undefined) {
-			config.removeAudioSrc = true;
-		}
-		if (config.removeVideoSrc === undefined) {
-			config.removeVideoSrc = true;
-		}
-		if (config.displayInfobar === undefined) {
-			config.displayInfobar = true;
-		}
-		if (config.backgroundSave === undefined) {
-			config.backgroundSave = true;
-		}
-		if (config.autoSaveDelay === undefined) {
-			config.autoSaveDelay = DEFAULT_CONFIG.autoSaveDelay;
-		}
-		if (config.removeAlternativeFonts === undefined) {
-			config.removeAlternativeFonts = true;
-		}
-		if (config.removeAlternativeMedias === undefined) {
-			config.removeAlternativeMedias = true;
-		}
-		if (config.removeAlternativeImages === undefined) {
-			if (config.removeAlternativeImages === undefined) {
-				config.removeAlternativeImages = true;
-			} else {
-				config.removeAlternativeImages = config.removeSrcSet;
-			}
-		}
-		if (config.groupDuplicateImages === undefined) {
-			config.groupDuplicateImages = true;
-		}
-		if (config.removeHiddenElements === undefined) {
-			config.removeHiddenElements = true;
-		}
-		if (config.autoSaveLoadOrUnload === undefined && !config.autoSaveUnload) {
+		if (config.autoSaveLoadOrUnload === undefined && !config.autoSaveUnload && !config.autoSaveLoad) {
 			config.autoSaveLoadOrUnload = true;
 			config.autoSaveLoad = false;
 			config.autoSaveUnload = false;
 		}
-		if (config.maxLazyLoadImagesIdleTime === undefined) {
-			config.maxLazyLoadImagesIdleTime = DEFAULT_CONFIG.maxLazyLoadImagesIdleTime;
+		if (!config.maxResourceSize) {
+			config.maxResourceSize = DEFAULT_CONFIG.maxResourceSize;
 		}
-		if (config.confirmFilename === undefined) {
-			config.confirmFilename = false;
+		if (config.appendSaveDate !== undefined) {
+			delete config.appendSaveDate;
 		}
-		if (config.conflictAction === undefined) {
-			config.conflictAction = DEFAULT_CONFIG.conflictAction;
+		if ((config.compressHTML === undefined || config.compressCSS === undefined) && config.compress !== undefined) {
+			config.compressHTML = config.compressCSS = config.compress;
+			delete config.compress;
+		}
+		upgradeOldConfig(config, "removeUnusedFonts", "removeUnusedStyles");
+		upgradeOldConfig(config, "removeUnusedStyles", "removeUnusedCSSRules");
+		upgradeOldConfig(config, "removeAlternativeImages", "removeSrcSet");
+		upgradeOldConfig(config, "confirmInfobarContent", "confirmInfobar");
+		upgradeOldConfig(config, "filenameConflictAction", "conflictAction");
+		upgradeOldConfig(config, "loadDeferredImages", "lazyLoadImages");
+		upgradeOldConfig(config, "loadDeferredImagesMaxIdleTime", "maxLazyLoadImagesIdleTime");
+		Object.keys(DEFAULT_CONFIG).forEach(configKey => upgradeConfig(config, configKey));
+	}
+
+	function upgradeOldConfig(config, newKey, oldKey) {
+		if (config[newKey] === undefined && config[oldKey] !== undefined) {
+			config[newKey] = config[oldKey];
+			delete config[oldKey];
 		}
 	}
 
-	async function getOptions() {
+	function upgradeConfig(config, key) {
+		if (config[key] === undefined) {
+			config[key] = DEFAULT_CONFIG[key];
+		}
+	}
+
+	async function getUrlOptions(url) {
 		const [config, tabsData] = await Promise.all([getConfig(), singlefile.tabsData.get()]);
-		return config.profiles[tabsData.profileName || DEFAULT_PROFILE_NAME];
+		const rule = await getRule(url);
+		return rule ? config.profiles[rule["profile"]] : config.profiles[tabsData.profileName || singlefile.config.DEFAULT_PROFILE_NAME];
+	}
+
+	async function getRule(url) {
+		const config = await getConfig();
+		const regExpRules = config.rules.filter(rule => testRegExpRule(rule));
+		let rule = regExpRules.sort(sortRules).find(rule => url && url.match(new RegExp(rule.url.split(REGEXP_RULE_PREFIX)[1])));
+		if (!rule) {
+			const normalRules = config.rules.filter(rule => !testRegExpRule(rule));
+			rule = normalRules.sort(sortRules).find(rule => url && url.includes(rule.url));
+		}
+		return rule;
 	}
 
 	async function getConfig() {
 		await pendingUpgradePromise;
 		return browser.storage.local.get(["profiles", "rules"]);
+	}
+
+	function sortRules(ruleLeft, ruleRight) {
+		ruleRight.url.length - ruleLeft.url.length;
+	}
+
+	function testRegExpRule(rule) {
+		return rule.url.toLowerCase().startsWith(REGEXP_RULE_PREFIX);
 	}
 
 	return {
@@ -207,10 +173,12 @@ singlefile.config = (() => {
 			const config = await getConfig();
 			return config.profiles;
 		},
+		async getRule(url) {
+			return getRule(url);
+		},
 		async getOptions(profileName, url, autoSave) {
-			const config = await getConfig();
-			const urlRule = config.rules.sort((ruleLeft, ruleRight) => ruleRight.url.length - ruleLeft.url.length).find(rule => url && url.includes(rule.url));
-			return urlRule ? config.profiles[urlRule[autoSave ? "autoSaveProfile" : "profile"]] : config.profiles[profileName || singlefile.config.DEFAULT_PROFILE_NAME];
+			const [config, rule] = await Promise.all([getConfig(), getRule(url)]);
+			return rule ? config.profiles[rule[autoSave ? "autoSaveProfile" : "profile"]] : config.profiles[profileName || singlefile.config.DEFAULT_PROFILE_NAME];
 		},
 		async updateProfile(profileName, profile) {
 			const config = await getConfig();
@@ -297,6 +265,11 @@ singlefile.config = (() => {
 			config.rules = config.rules.filter(rule => rule.url != url);
 			await browser.storage.local.set({ rules: config.rules });
 		},
+		async deleteRules(profileName) {
+			const config = await getConfig();
+			config.rules = config.rules = profileName ? config.rules.filter(rule => rule.autoSaveProfile != profileName && rule.profile != profileName) : [];
+			await browser.storage.local.set({ rules: config.rules });
+		},
 		async updateRule(url, newURL, profile, autoSaveProfile) {
 			if (!url || !newURL) {
 				throw new Error("URL is empty");
@@ -321,6 +294,46 @@ singlefile.config = (() => {
 			await singlefile.tabsData.set(tabsData);
 			await browser.storage.local.remove(["profiles", "rules"]);
 			await browser.storage.local.set({ profiles: { [DEFAULT_PROFILE_NAME]: DEFAULT_CONFIG }, rules: [] });
+		},
+		async export() {
+			const config = await getConfig();
+			const url = URL.createObjectURL(new Blob([JSON.stringify({ profiles: config.profiles, rules: config.rules }, null, 2)], { type: "text/json" }));
+			const downloadInfo = {
+				url,
+				filename: "singlefile-settings.json",
+				saveAs: true
+			};
+			const downloadId = await browser.downloads.download(downloadInfo);
+			return new Promise((resolve, reject) => {
+				browser.downloads.onChanged.addListener(onChanged);
+
+				function onChanged(event) {
+					if (event.id == downloadId && event.state) {
+						if (event.state.current == "complete") {
+							URL.revokeObjectURL(url);
+							resolve({});
+							browser.downloads.onChanged.removeListener(onChanged);
+						}
+						if (event.state.current == "interrupted" && (!event.error || event.error.current != "USER_CANCELED")) {
+							URL.revokeObjectURL(url);
+							reject(new Error(event.state.current));
+							browser.downloads.onChanged.removeListener(onChanged);
+						}
+					}
+				}
+			});
+		},
+		async import(file) {
+			const reader = new FileReader();
+			reader.readAsText(file);
+			const serializedConfig = await new Promise((resolve, reject) => {
+				reader.addEventListener("load", () => resolve(reader.result), false);
+				reader.addEventListener("error", reject, false);
+			});
+			const config = JSON.parse(serializedConfig);
+			await browser.storage.local.remove(["profiles", "rules"]);
+			await browser.storage.local.set({ profiles: config.profiles, rules: config.rules });
+			await upgrade();
 		}
 	};
 

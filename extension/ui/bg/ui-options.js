@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Gildas Lormeau
+ * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
  * 
  * This file is part of SingleFile.
@@ -18,7 +18,7 @@
  *   along with SingleFile.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* global browser, window, document */
+/* global browser, window, document, localStorage */
 
 (async () => {
 
@@ -30,24 +30,25 @@
 	const confirm = browserInfo.name == CHROME_BROWSER_NAME ? message => bgPage.confirm(message) : message => { document.body.style.opacity = 0; const value = window.confirm(message); document.body.style.opacity = 1; return value; };
 	const removeHiddenElementsLabel = document.getElementById("removeHiddenElementsLabel");
 	const removeUnusedStylesLabel = document.getElementById("removeUnusedStylesLabel");
+	const removeUnusedFontsLabel = document.getElementById("removeUnusedFontsLabel");
 	const removeFramesLabel = document.getElementById("removeFramesLabel");
 	const removeImportsLabel = document.getElementById("removeImportsLabel");
 	const removeScriptsLabel = document.getElementById("removeScriptsLabel");
 	const saveRawPageLabel = document.getElementById("saveRawPageLabel");
 	const compressHTMLLabel = document.getElementById("compressHTMLLabel");
 	const compressCSSLabel = document.getElementById("compressCSSLabel");
-	const lazyLoadImagesLabel = document.getElementById("lazyLoadImagesLabel");
-	const maxLazyLoadImagesIdleTimeLabel = document.getElementById("maxLazyLoadImagesIdleTimeLabel");
+	const loadDeferredImagesLabel = document.getElementById("loadDeferredImagesLabel");
+	const loadDeferredImagesMaxIdleTimeLabel = document.getElementById("loadDeferredImagesMaxIdleTimeLabel");
 	const addMenuEntryLabel = document.getElementById("addMenuEntryLabel");
 	const filenameTemplateLabel = document.getElementById("filenameTemplateLabel");
 	const shadowEnabledLabel = document.getElementById("shadowEnabledLabel");
 	const setMaxResourceSizeLabel = document.getElementById("setMaxResourceSizeLabel");
 	const maxResourceSizeLabel = document.getElementById("maxResourceSizeLabel");
 	const confirmFilenameLabel = document.getElementById("confirmFilenameLabel");
-	const conflictActionLabel = document.getElementById("conflictActionLabel");
-	const conflictActionUniquifyLabel = document.getElementById("conflictActionUniquifyLabel");
-	const conflictActionOverwriteLabel = document.getElementById("conflictActionOverwriteLabel");
-	const conflictActionPromptLabel = document.getElementById("conflictActionPromptLabel");
+	const filenameConflictActionLabel = document.getElementById("filenameConflictActionLabel");
+	const filenameConflictActionUniquifyLabel = document.getElementById("filenameConflictActionUniquifyLabel");
+	const filenameConflictActionOverwriteLabel = document.getElementById("filenameConflictActionOverwriteLabel");
+	const filenameConflictActionPromptLabel = document.getElementById("filenameConflictActionPromptLabel");
 	const removeAudioLabel = document.getElementById("removeAudioLabel");
 	const removeVideoLabel = document.getElementById("removeVideoLabel");
 	const displayInfobarLabel = document.getElementById("displayInfobarLabel");
@@ -66,6 +67,7 @@
 	const htmlContentLabel = document.getElementById("htmlContentLabel");
 	const imagesLabel = document.getElementById("imagesLabel");
 	const stylesheetsLabel = document.getElementById("stylesheetsLabel");
+	const fontsLabel = document.getElementById("fontsLabel");
 	const otherResourcesLabel = document.getElementById("otherResourcesLabel");
 	const autoSaveLabel = document.getElementById("autoSaveLabel");
 	const autoSettingsLabel = document.getElementById("autoSettingsLabel");
@@ -83,24 +85,28 @@
 	const deleteProfileButton = document.getElementById("deleteProfileButton");
 	const renameProfileButton = document.getElementById("renameProfileButton");
 	const resetButton = document.getElementById("resetButton");
+	const exportButton = document.getElementById("exportButton");
+	const importButton = document.getElementById("importButton");
+	const fileInput = document.getElementById("fileInput");
 	const profileNamesInput = document.getElementById("profileNamesInput");
 	const removeHiddenElementsInput = document.getElementById("removeHiddenElementsInput");
 	const removeUnusedStylesInput = document.getElementById("removeUnusedStylesInput");
+	const removeUnusedFontsInput = document.getElementById("removeUnusedFontsInput");
 	const removeFramesInput = document.getElementById("removeFramesInput");
 	const removeImportsInput = document.getElementById("removeImportsInput");
 	const removeScriptsInput = document.getElementById("removeScriptsInput");
 	const saveRawPageInput = document.getElementById("saveRawPageInput");
 	const compressHTMLInput = document.getElementById("compressHTMLInput");
 	const compressCSSInput = document.getElementById("compressCSSInput");
-	const lazyLoadImagesInput = document.getElementById("lazyLoadImagesInput");
-	const maxLazyLoadImagesIdleTimeInput = document.getElementById("maxLazyLoadImagesIdleTimeInput");
+	const loadDeferredImagesInput = document.getElementById("loadDeferredImagesInput");
+	const loadDeferredImagesMaxIdleTimeInput = document.getElementById("loadDeferredImagesMaxIdleTimeInput");
 	const contextMenuEnabledInput = document.getElementById("contextMenuEnabledInput");
 	const filenameTemplateInput = document.getElementById("filenameTemplateInput");
 	const shadowEnabledInput = document.getElementById("shadowEnabledInput");
 	const maxResourceSizeInput = document.getElementById("maxResourceSizeInput");
 	const maxResourceSizeEnabledInput = document.getElementById("maxResourceSizeEnabledInput");
 	const confirmFilenameInput = document.getElementById("confirmFilenameInput");
-	const conflictActionInput = document.getElementById("conflictActionInput");
+	const filenameConflictActionInput = document.getElementById("filenameConflictActionInput");
 	const removeAudioSrcInput = document.getElementById("removeAudioSrcInput");
 	const removeVideoSrcInput = document.getElementById("removeVideoSrcInput");
 	const displayInfobarInput = document.getElementById("displayInfobarInput");
@@ -117,6 +123,7 @@
 	const infobarTemplateInput = document.getElementById("infobarTemplateInput");
 	const confirmInfobarInput = document.getElementById("confirmInfobarInput");
 	const expandAllButton = document.getElementById("expandAllButton");
+	const rulesDeleteAllButton = document.getElementById("rulesDeleteAllButton");
 	const ruleUrlInput = document.getElementById("ruleUrlInput");
 	const ruleProfileInput = document.getElementById("ruleProfileInput");
 	const ruleAutoSaveProfileInput = document.getElementById("ruleAutoSaveProfileInput");
@@ -127,20 +134,38 @@
 	const rulesContainerElement = document.querySelector(".rules-table-container");
 	const ruleEditUrlInput = document.getElementById("ruleEditUrlInput");
 	const ruleEditButton = document.getElementById("ruleEditButton");
+	const createURLElement = rulesElement.querySelector(".rule-create");
 	const showAllProfilesInput = document.getElementById("showAllProfilesInput");
 	const showAutoSaveProfileInput = document.getElementById("showAutoSaveProfileInput");
 	let pendingSave = Promise.resolve();
-	ruleAddButton.addEventListener("click", async () => {
+	let autoSaveProfileChanged;
+	ruleProfileInput.onchange = () => {
+		if (!autoSaveProfileChanged) {
+			ruleAutoSaveProfileInput.value = ruleProfileInput.value;
+		}
+	};
+	ruleAutoSaveProfileInput.onchange = () => {
+		autoSaveProfileChanged = true;
+	};
+	rulesDeleteAllButton.addEventListener("click", async () => {
+		if (confirm(browser.i18n.getMessage("optionsDeleteDisplayedRulesConfirm"))) {
+			await singlefile.config.deleteRules(!showAllProfilesInput.checked && profileNamesInput.value);
+			await refresh();
+		}
+	}, false);
+	createURLElement.onsubmit = async event => {
+		event.preventDefault();
 		try {
 			await singlefile.config.addRule(ruleUrlInput.value, ruleProfileInput.value, ruleAutoSaveProfileInput.value);
 			ruleUrlInput.value = "";
 			ruleProfileInput.value = ruleAutoSaveProfileInput.value = singlefile.config.DEFAULT_PROFILE_NAME;
+			autoSaveProfileChanged = false;
 			await refresh();
 			ruleUrlInput.focus();
 		} catch (error) {
 			// ignored
 		}
-	}, false);
+	};
 	ruleUrlInput.onclick = ruleUrlInput.onkeyup = ruleUrlInput.onchange = async () => {
 		ruleAddButton.disabled = !ruleUrlInput.value;
 		const rules = await singlefile.config.getRules();
@@ -155,11 +180,27 @@
 			ruleEditButton.disabled = true;
 		}
 	};
+	if (localStorage.getItem("optionShowAutoSaveProfile")) {
+		showAutoSaveProfileInput.checked = true;
+		rulesContainerElement.classList.remove("compact");
+	}
 	showAutoSaveProfileInput.addEventListener("click", () => {
 		if (showAutoSaveProfileInput.checked) {
+			localStorage.setItem("optionShowAutoSaveProfile", 1);
 			rulesContainerElement.classList.remove("compact");
 		} else {
+			localStorage.setItem("optionShowAutoSaveProfile", 0);
 			rulesContainerElement.classList.add("compact");
+		}
+	}, false);
+	if (localStorage.getItem("optionShowAllProfiles")) {
+		showAllProfilesInput.checked = true;
+	}
+	showAllProfilesInput.addEventListener("click", () => {
+		if (showAllProfilesInput.checked) {
+			localStorage.setItem("optionShowAllProfiles", 1);
+		} else {
+			localStorage.setItem("optionShowAllProfiles", 0);
 		}
 	}, false);
 	addProfileButton.addEventListener("click", async () => {
@@ -201,6 +242,19 @@
 			await Promise.all([refresh(singlefile.config.DEFAULT_PROFILE_NAME), singlefile.ui.menu.refresh()]);
 			await update();
 		}
+	}, false);
+	exportButton.addEventListener("click", async () => {
+		await singlefile.config.export();
+	}, false);
+	importButton.addEventListener("click", () => {
+		fileInput.onchange = async () => {
+			if (fileInput.files.length) {
+				await singlefile.config.import(fileInput.files[0]);
+				await refresh(singlefile.config.DEFAULT_PROFILE_NAME);
+				fileInput.value = "";
+			}
+		};
+		fileInput.click();
 	}, false);
 	autoSaveUnloadInput.addEventListener("click", async () => {
 		if (!autoSaveLoadInput.checked && !autoSaveUnloadInput.checked) {
@@ -246,24 +300,25 @@
 	renameProfileButton.title = browser.i18n.getMessage("profileRenameButtonTooltip");
 	removeHiddenElementsLabel.textContent = browser.i18n.getMessage("optionRemoveHiddenElements");
 	removeUnusedStylesLabel.textContent = browser.i18n.getMessage("optionRemoveUnusedStyles");
+	removeUnusedFontsLabel.textContent = browser.i18n.getMessage("optionRemoveUnusedFonts");
 	removeFramesLabel.textContent = browser.i18n.getMessage("optionRemoveFrames");
 	removeImportsLabel.textContent = browser.i18n.getMessage("optionRemoveImports");
 	removeScriptsLabel.textContent = browser.i18n.getMessage("optionRemoveScripts");
 	saveRawPageLabel.textContent = browser.i18n.getMessage("optionSaveRawPage");
 	compressHTMLLabel.textContent = browser.i18n.getMessage("optionCompressHTML");
 	compressCSSLabel.textContent = browser.i18n.getMessage("optionCompressCSS");
-	lazyLoadImagesLabel.textContent = browser.i18n.getMessage("optionLazyLoadImages");
-	maxLazyLoadImagesIdleTimeLabel.textContent = browser.i18n.getMessage("optionMaxLazyLoadImagesIdleTime");
+	loadDeferredImagesLabel.textContent = browser.i18n.getMessage("optionLoadDeferredImages");
+	loadDeferredImagesMaxIdleTimeLabel.textContent = browser.i18n.getMessage("optionLoadDeferredImagesMaxIdleTime");
 	addMenuEntryLabel.textContent = browser.i18n.getMessage("optionAddMenuEntry");
 	filenameTemplateLabel.textContent = browser.i18n.getMessage("optionFilenameTemplate");
 	shadowEnabledLabel.textContent = browser.i18n.getMessage("optionDisplayShadow");
 	setMaxResourceSizeLabel.textContent = browser.i18n.getMessage("optionSetMaxResourceSize");
 	maxResourceSizeLabel.textContent = browser.i18n.getMessage("optionMaxResourceSize");
 	confirmFilenameLabel.textContent = browser.i18n.getMessage("optionConfirmFilename");
-	conflictActionLabel.textContent = browser.i18n.getMessage("optionConflictAction");
-	conflictActionUniquifyLabel.textContent = browser.i18n.getMessage("optionConflictActionUniquify");
-	conflictActionOverwriteLabel.textContent = browser.i18n.getMessage("optionConflictActionOverwrite");
-	conflictActionPromptLabel.textContent = browser.i18n.getMessage("optionConflictActionPrompt");
+	filenameConflictActionLabel.textContent = browser.i18n.getMessage("optionFilenameConflictAction");
+	filenameConflictActionUniquifyLabel.textContent = browser.i18n.getMessage("optionFilenameConflictActionUniquify");
+	filenameConflictActionOverwriteLabel.textContent = browser.i18n.getMessage("optionFilenameConflictActionOverwrite");
+	filenameConflictActionPromptLabel.textContent = browser.i18n.getMessage("optionFilenameConflictActionPrompt");
 	removeAudioLabel.textContent = browser.i18n.getMessage("optionRemoveAudio");
 	removeVideoLabel.textContent = browser.i18n.getMessage("optionRemoveVideo");
 	displayInfobarLabel.textContent = browser.i18n.getMessage("optionDisplayInfobar");
@@ -283,6 +338,7 @@
 	htmlContentLabel.textContent = browser.i18n.getMessage("optionsHTMLContentSubTitle");
 	imagesLabel.textContent = browser.i18n.getMessage("optionsImagesSubTitle");
 	stylesheetsLabel.textContent = browser.i18n.getMessage("optionsStylesheetsSubTitle");
+	fontsLabel.textContent = browser.i18n.getMessage("optionsFontsSubTitle");
 	otherResourcesLabel.textContent = browser.i18n.getMessage("optionsOtherResourcesSubTitle");
 	autoSaveLabel.textContent = browser.i18n.getMessage("optionsAutoSaveSubTitle");
 	miscLabel.textContent = browser.i18n.getMessage("optionsMiscSubTitle");
@@ -290,6 +346,8 @@
 	infobarTemplateLabel.textContent = browser.i18n.getMessage("optionInfobarTemplate");
 	confirmInfobarLabel.textContent = browser.i18n.getMessage("optionConfirmInfobar");
 	resetButton.textContent = browser.i18n.getMessage("optionsResetButton");
+	exportButton.textContent = browser.i18n.getMessage("optionsExportButton");
+	importButton.textContent = browser.i18n.getMessage("optionsImportButton");
 	resetButton.title = browser.i18n.getMessage("optionsResetTooltip");
 	autoSettingsLabel.textContent = browser.i18n.getMessage("optionsAutoSettingsSubTitle");
 	autoSettingsUrlLabel.textContent = browser.i18n.getMessage("optionsAutoSettingsUrl");
@@ -297,6 +355,7 @@
 	autoSettingsAutoSaveProfileLabel.textContent = browser.i18n.getMessage("optionsAutoSettingsAutoSaveProfile");
 	ruleAddButton.title = browser.i18n.getMessage("optionsAddRuleTooltip");
 	ruleEditButton.title = browser.i18n.getMessage("optionsValidateChangesTooltip");
+	rulesDeleteAllButton.title = browser.i18n.getMessage("optionsDeleteRulesTooltip");
 	showAllProfilesLabel.textContent = browser.i18n.getMessage("optionsAutoSettingsShowAllProfiles");
 	showAutoSaveProfileLabel.textContent = browser.i18n.getMessage("optionsAutoSettingsShowAutoSaveProfile");
 	ruleUrlInput.placeholder = ruleEditUrlInput.placeholder = browser.i18n.getMessage("optionsAutoSettingsUrlPlaceholder");
@@ -338,13 +397,15 @@
 		ruleAutoSaveProfileInput.appendChild(optionElement);
 		ruleEditAutoSaveProfileInput.appendChild(optionElement.cloneNode(true));
 		const rulesDataElement = rulesElement.querySelector(".rules-data");
-		Array.from(rulesDataElement.childNodes).forEach(node => node.remove());
+		Array.from(rulesDataElement.childNodes).forEach(node => (!node.className || !node.className.includes("rule-edit")) && node.remove());
 		const editURLElement = rulesElement.querySelector(".rule-edit");
-		const createURLElement = rulesElement.querySelector(".rule-create");
 		createURLElement.hidden = false;
 		editURLElement.hidden = true;
+		ruleProfileInput.value = ruleAutoSaveProfileInput.value = selectedProfileName;
+		let rulesDisplayed;
 		rules.forEach(rule => {
 			if (showAllProfilesInput.checked || selectedProfileName == rule.profile || selectedProfileName == rule.autoSaveProfile) {
+				rulesDisplayed = true;
 				const ruleElement = rulesElement.querySelector(".rule-view").cloneNode(true);
 				const ruleUrlElement = ruleElement.querySelector(".rule-url");
 				const ruleProfileElement = ruleElement.querySelector(".rule-profile");
@@ -373,30 +434,35 @@
 						ruleEditUrlInput.value = rule.url;
 						ruleEditProfileInput.value = rule.profile;
 						ruleEditAutoSaveProfileInput.value = rule.autoSaveProfile;
-						ruleEditButton.onclick = async () => {
+						ruleEditUrlInput.focus();
+						editURLElement.onsubmit = async event => {
+							event.preventDefault();
 							rulesElement.appendChild(editURLElement);
 							await singlefile.config.updateRule(rule.url, ruleEditUrlInput.value, ruleEditProfileInput.value, ruleEditAutoSaveProfileInput.value);
 							await refresh();
+							ruleUrlInput.focus();
 						};
 					}
 				}, false);
 			}
 		});
+		rulesDeleteAllButton.disabled = !rulesDisplayed;
 		rulesElement.appendChild(createURLElement);
 		profileNamesInput.value = selectedProfileName;
 		renameProfileButton.disabled = deleteProfileButton.disabled = profileNamesInput.value == singlefile.config.DEFAULT_PROFILE_NAME;
 		const profileOptions = profiles[selectedProfileName];
 		removeHiddenElementsInput.checked = profileOptions.removeHiddenElements;
 		removeUnusedStylesInput.checked = profileOptions.removeUnusedStyles;
+		removeUnusedFontsInput.checked = profileOptions.removeUnusedFonts;
 		removeFramesInput.checked = profileOptions.removeFrames;
 		removeImportsInput.checked = profileOptions.removeImports;
 		removeScriptsInput.checked = profileOptions.removeScripts;
 		saveRawPageInput.checked = profileOptions.saveRawPage;
 		compressHTMLInput.checked = profileOptions.compressHTML;
 		compressCSSInput.checked = profileOptions.compressCSS;
-		lazyLoadImagesInput.checked = profileOptions.lazyLoadImages;
-		maxLazyLoadImagesIdleTimeInput.value = profileOptions.maxLazyLoadImagesIdleTime;
-		maxLazyLoadImagesIdleTimeInput.disabled = !profileOptions.lazyLoadImages;
+		loadDeferredImagesInput.checked = profileOptions.loadDeferredImages;
+		loadDeferredImagesMaxIdleTimeInput.value = profileOptions.loadDeferredImagesMaxIdleTime;
+		loadDeferredImagesMaxIdleTimeInput.disabled = !profileOptions.loadDeferredImages;
 		contextMenuEnabledInput.checked = profileOptions.contextMenuEnabled;
 		filenameTemplateInput.value = profileOptions.filenameTemplate;
 		shadowEnabledInput.checked = profileOptions.shadowEnabled;
@@ -404,7 +470,7 @@
 		maxResourceSizeInput.value = profileOptions.maxResourceSize;
 		maxResourceSizeInput.disabled = !profileOptions.maxResourceSizeEnabled;
 		confirmFilenameInput.checked = profileOptions.confirmFilename;
-		conflictActionInput.value = profileOptions.conflictAction;
+		filenameConflictActionInput.value = profileOptions.filenameConflictAction;
 		removeAudioSrcInput.checked = profileOptions.removeAudioSrc;
 		removeVideoSrcInput.checked = profileOptions.removeVideoSrc;
 		displayInfobarInput.checked = profileOptions.displayInfobar;
@@ -422,7 +488,7 @@
 		groupDuplicateImagesInput.checked = profileOptions.groupDuplicateImages;
 		removeAlternativeMediasInput.checked = profileOptions.removeAlternativeMedias;
 		infobarTemplateInput.value = profileOptions.infobarTemplate;
-		confirmInfobarInput.checked = profileOptions.confirmInfobar;
+		confirmInfobarInput.checked = profileOptions.confirmInfobarContent;
 	}
 
 	function getProfileText(profileName) {
@@ -434,21 +500,22 @@
 		pendingSave = singlefile.config.updateProfile(profileNamesInput.value, {
 			removeHiddenElements: removeHiddenElementsInput.checked,
 			removeUnusedStyles: removeUnusedStylesInput.checked,
+			removeUnusedFonts: removeUnusedFontsInput.checked,
 			removeFrames: removeFramesInput.checked,
 			removeImports: removeImportsInput.checked,
 			removeScripts: removeScriptsInput.checked,
 			saveRawPage: saveRawPageInput.checked,
 			compressHTML: compressHTMLInput.checked,
 			compressCSS: compressCSSInput.checked,
-			lazyLoadImages: lazyLoadImagesInput.checked,
-			maxLazyLoadImagesIdleTime: Math.max(maxLazyLoadImagesIdleTimeInput.value, 0),
+			loadDeferredImages: loadDeferredImagesInput.checked,
+			loadDeferredImagesMaxIdleTime: Math.max(loadDeferredImagesMaxIdleTimeInput.value, 0),
 			contextMenuEnabled: contextMenuEnabledInput.checked,
 			filenameTemplate: filenameTemplateInput.value,
 			shadowEnabled: shadowEnabledInput.checked,
 			maxResourceSizeEnabled: maxResourceSizeEnabledInput.checked,
 			maxResourceSize: Math.max(maxResourceSizeInput.value, 0),
 			confirmFilename: confirmFilenameInput.checked,
-			conflictAction: conflictActionInput.value,
+			filenameConflictAction: filenameConflictActionInput.value,
 			removeAudioSrc: removeAudioSrcInput.checked,
 			removeVideoSrc: removeVideoSrcInput.checked,
 			displayInfobar: displayInfobarInput.checked,
@@ -463,7 +530,7 @@
 			removeAlternativeMedias: removeAlternativeMediasInput.checked,
 			groupDuplicateImages: groupDuplicateImagesInput.checked,
 			infobarTemplate: infobarTemplateInput.value,
-			confirmInfobar: confirmInfobarInput.checked
+			confirmInfobarContent: confirmInfobarInput.checked
 		});
 		await pendingSave;
 		await singlefile.ui.menu.refresh();

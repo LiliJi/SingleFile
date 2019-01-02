@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Gildas Lormeau
+ * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
  * 
  * This file is part of SingleFile.
@@ -30,7 +30,6 @@ singlefile.runner = (() => {
 		"/lib/single-file/util/timeout.js",
 		"/lib/single-file/util/doc-helper.js",
 		"/lib/fetch/content/fetch.js",
-		"/lib/lazy/content/content-lazy-loader.js",
 		"/lib/single-file/single-file-core.js",
 		"/lib/single-file/single-file-browser.js",
 		"/extension/index.js",
@@ -45,7 +44,6 @@ singlefile.runner = (() => {
 		"/lib/single-file/util/doc-helper.js",
 		"/lib/single-file/util/timeout.js",
 		"/lib/fetch/content/fetch.js",
-		"/lib/lazy/content/content-lazy-loader.js",
 		"/lib/frame-tree/frame-tree.js",
 		"/extension/core/content/content-frame.js"
 	];
@@ -58,21 +56,26 @@ singlefile.runner = (() => {
 		compressCSS: [
 			"/lib/single-file/vendor/css-minifier.js"
 		],
-		removeAlternativeFonts: [
-			"/lib/single-file/modules/css-fonts-alt-minifier.js"
-		],
-		removeAlternativeMedias: [
-			"/lib/single-file/vendor/css-media-query-parser.js",
-			"/lib/single-file/modules/css-medias-alt-minifier.js"
+		loadDeferredImages: [
+			"/lib/lazy/content/content-lazy-loader.js"
 		],
 		removeAlternativeImages: [
 			"/lib/single-file/modules/html-images-alt-minifier.js"
 		],
-		removeUnusedStyles: [
+		removeUnusedFonts: [
 			"/lib/single-file/vendor/css-font-property-parser.js",
-			"/lib/single-file/modules/css-matched-rules.js",
-			"/lib/single-file/modules/css-rules-minifier.js",
 			"/lib/single-file/modules/css-fonts-minifier.js"
+		],
+		removeAlternativeFonts: [
+			"/lib/single-file/modules/css-fonts-alt-minifier.js"
+		],
+		removeUnusedStyles: [
+			"/lib/single-file/modules/css-matched-rules.js",
+			"/lib/single-file/modules/css-rules-minifier.js"
+		],
+		removeAlternativeMedias: [
+			"/lib/single-file/vendor/css-media-query-parser.js",
+			"/lib/single-file/modules/css-medias-alt-minifier.js"
 		]
 	};
 

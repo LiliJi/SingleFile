@@ -1,6 +1,19 @@
 # SingleFile
 SingleFile is a WebExtension compatible with Chrome, Firefox (Desktop and Mobile), and Opera that helps you to save a complete web page into a single HTML file.
 
+## Table of Contents
+ - [Demo](#demo)
+ - [Install](#install)
+ - [Getting started](#getting-started)
+ - [Additional notes](#additional-notes)
+ - [More info](#more-info)
+ - [Statistics (Firefox)](#statistics-firefox)
+ - [Known issues](#known-issues)
+ - [Troubleshooting unknown issues](#troubleshooting-unknown-issues)
+ - [Contributors](#contributors)
+ - [Code derived from third party projects](#code-derived-from-third-party-projects)
+ - [License](#license)
+
 ## Demo
 https://www.youtube.com/watch?v=RdV8DBW5b0g
 
@@ -33,7 +46,7 @@ https://www.youtube.com/watch?v=RdV8DBW5b0g
  - You can use the shortcut Ctrl+Shift+X to save current or selected tabs in Chrome. Go to chrome://extensions/shortcuts to change it.
 
 ## More info
-See the extension help in the options page for more detailed information about the options, and technical notes. See https://github.com/gildas-lormeau/SingleFile/wiki/Optimizations-applied-to-web-pages for some info about the optimizations applied to web pages.
+See the extension help in the options page for more detailed information about the options and technical notes.
 
 ## Statistics (Firefox)
 See https://addons.mozilla.org/en-US/firefox/addon/single-file/statistics/?last=90
@@ -41,7 +54,7 @@ See https://addons.mozilla.org/en-US/firefox/addon/single-file/statistics/?last=
 ## Known Issues
 - All browsers:
   - For security reasons, you cannot save pages hosted on https://chrome.google.com or https://addons.mozilla.org.
-  - The last saved path cannot be remembered by default. To circumvent this limitation, disable the option "Save pages in background".
+  - The last saved path cannot be remembered by default. To circumvent this limitation, disable the option "Misc > Save pages in background".
 - Chrome/Opera:
   - You must enable the option "Allow access to file URLs" in the extension page to display the infobar when viewing a saved page, or to save a page stored on the filesystem.  
 
@@ -49,7 +62,8 @@ See https://addons.mozilla.org/en-US/firefox/addon/single-file/statistics/?last=
 Please follow these steps if you find an unknown issue:
 - Save the page in incognito.
 - If saving page in incognito did not fix the issue, reset SingleFile options.
-- If resetting options did not fix the issue, try to disable all other extensions to see if there is a conflict.
+- If resetting options did not fix the issue, restart the browser.
+- If restarting the browser did not fix the issue, try to disable all other extensions to see if there is a conflict.
 - If there is a conflict then try to determine against which extension(s).
 - Please report the issue with a short description on how to reproduce it here: https://github.com/gildas-lormeau/SingleFile/issues.
 
@@ -59,7 +73,7 @@ Please follow these steps if you find an unknown issue:
 - Polish translation done by xesarni (https://github.com/xesarni)
 - Russian translation done by rstp14 (https://github.com/rstp14)
 
-## Code derived from third party projects used in SingleFile
+## Code derived from third party projects
 - csstree: https://github.com/csstree/csstree
 - postcss-media-query-parser: https://github.com/dryoma/postcss-media-query-parser
 - UglifyCSS: https://github.com/fmarcia/UglifyCSS
