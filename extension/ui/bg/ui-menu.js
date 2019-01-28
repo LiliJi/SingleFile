@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -29,16 +29,15 @@ singlefile.ui.menu = (() => {
 	const MENU_ID_SELECT_PROFILE_PREFIX = "select-profile-";
 	const MENU_ID_ASSOCIATE_WITH_PROFILE = "associate-with-profile";
 	const MENU_ID_ASSOCIATE_WITH_PROFILE_PREFIX = "associate-with-profile-";
-	const MENU_ID_SAVE_SELECTED = "save-selected";
+	//const MENU_ID_SAVE_SELECTED = "save-selected";
 	const MENU_ID_SAVE_FRAME = "save-frame";
-	const MENU_ID_SAVE_SELECTED_TABS = "save-selected-tabs";
-	const MENU_ID_SAVE_UNPINNED_TABS = "save-unpinned-tabs";
-	const MENU_ID_SAVE_ALL_TABS = "save-tabs";
-	const MENU_ID_AUTO_SAVE = "auto-save";
+  //const MENU_ID_SAVE_SELECTED_TABS = "save-selected-tabs";
+//	const MENU_ID_SAVE_ALL_TABS = "save-tabs";
+//	const MENU_ID_AUTO_SAVE = "auto-save";
 	const MENU_ID_AUTO_SAVE_DISABLED = "auto-save-disabled";
 	const MENU_ID_AUTO_SAVE_TAB = "auto-save-tab";
-	const MENU_ID_AUTO_SAVE_UNPINNED = "auto-save-unpinned";
-	const MENU_ID_AUTO_SAVE_ALL = "auto-save-all";
+  //const MENU_ID_AUTO_SAVE_UNPINNED = "auto-save-unpinned";
+//	const MENU_ID_AUTO_SAVE_ALL = "auto-save-all";
 
 	let profileIndexes = new Map();
 	initialize();
@@ -74,33 +73,6 @@ singlefile.ui.menu = (() => {
 					type: "separator"
 				});
 			}
-			menus.create({
-				id: MENU_ID_SAVE_SELECTED,
-				contexts: defaultContexts,
-				title: browser.i18n.getMessage("menuSaveSelection")
-			});
-			if (options.contextMenuEnabled) {
-				menus.create({
-					id: MENU_ID_SAVE_FRAME,
-					contexts: ["frame"],
-					title: browser.i18n.getMessage("menuSaveFrame")
-				});
-				menus.create({
-					id: MENU_ID_SAVE_SELECTED_TABS,
-					contexts: pageContextsEnabled,
-					title: browser.i18n.getMessage("menuSaveSelectedTabs")
-				});
-			}
-			menus.create({
-				id: MENU_ID_SAVE_UNPINNED_TABS,
-				contexts: defaultContexts,
-				title: browser.i18n.getMessage("menuUnpinnedTabs")
-			});
-			menus.create({
-				id: MENU_ID_SAVE_ALL_TABS,
-				contexts: defaultContexts,
-				title: browser.i18n.getMessage("menuAllTabs")
-			});
 			if (options.contextMenuEnabled) {
 				menus.create({
 					id: "separator-2",
@@ -167,18 +139,16 @@ singlefile.ui.menu = (() => {
 					type: "separator"
 				});
 			}
-			menus.create({
-				id: MENU_ID_AUTO_SAVE,
-				contexts: defaultContexts,
-				title: browser.i18n.getMessage("menuAutoSave")
-			});
+//			menus.create({
+//				id: MENU_ID_AUTO_SAVE,
+//				title: browser.i18n.getMessage("menuAutoSave")
+	//		});
 			menus.create({
 				id: MENU_ID_AUTO_SAVE_DISABLED,
 				type: "radio",
 				title: browser.i18n.getMessage("menuAutoSaveDisabled"),
 				contexts: defaultContexts,
 				checked: true,
-				parentId: MENU_ID_AUTO_SAVE
 			});
 			menus.create({
 				id: MENU_ID_AUTO_SAVE_TAB,
@@ -186,24 +156,15 @@ singlefile.ui.menu = (() => {
 				title: browser.i18n.getMessage("menuAutoSaveTab"),
 				contexts: defaultContexts,
 				checked: false,
-				parentId: MENU_ID_AUTO_SAVE
 			});
-			menus.create({
-				id: MENU_ID_AUTO_SAVE_UNPINNED,
-				type: "radio",
-				title: browser.i18n.getMessage("menuAutoSaveUnpinnedTabs"),
-				contexts: defaultContexts,
-				checked: false,
-				parentId: MENU_ID_AUTO_SAVE
-			});
-			menus.create({
-				id: MENU_ID_AUTO_SAVE_ALL,
-				type: "radio",
-				title: browser.i18n.getMessage("menuAutoSaveAllTabs"),
-				contexts: defaultContexts,
-				checked: false,
-				parentId: MENU_ID_AUTO_SAVE
-			});
+//			menus.create({
+//				id: MENU_ID_AUTO_SAVE_ALL,
+//				type: "radio",
+//				title: browser.i18n.getMessage("menuAutoSaveAllTabs"),
+//				contexts: defaultContexts,
+//				checked: false,
+//				parentId: MENU_ID_AUTO_SAVE
+//			});
 		}
 	}
 
@@ -213,24 +174,10 @@ singlefile.ui.menu = (() => {
 			menus.onClicked.addListener(async (event, tab) => {
 				if (event.menuItemId == MENU_ID_SAVE_PAGE) {
 					singlefile.ui.saveTab(tab);
-				}
-				if (event.menuItemId == MENU_ID_SAVE_SELECTED) {
-					singlefile.ui.saveTab(tab, { selected: true });
+					chrome.storage.local.set({'tabId': tab.id});
 				}
 				if (event.menuItemId == MENU_ID_SAVE_FRAME) {
 					singlefile.ui.saveTab(tab, { frameId: event.frameId });
-				}
-				if (event.menuItemId == MENU_ID_SAVE_SELECTED_TABS) {
-					const tabs = await browser.tabs.query({ currentWindow: true, highlighted: true });
-					tabs.forEach(tab => singlefile.ui.isAllowedURL(tab.url) && singlefile.ui.saveTab(tab));
-				}
-				if (event.menuItemId == MENU_ID_SAVE_UNPINNED_TABS) {
-					const tabs = await browser.tabs.query({ currentWindow: true, pinned: false });
-					tabs.forEach(tab => singlefile.ui.isAllowedURL(tab.url) && singlefile.ui.saveTab(tab));
-				}
-				if (event.menuItemId == MENU_ID_SAVE_ALL_TABS) {
-					const tabs = await browser.tabs.query({ currentWindow: true });
-					tabs.forEach(tab => singlefile.ui.isAllowedURL(tab.url) && singlefile.ui.saveTab(tab));
 				}
 				if (event.menuItemId == MENU_ID_AUTO_SAVE_TAB) {
 					const tabsData = await singlefile.tabsData.get();
@@ -239,6 +186,7 @@ singlefile.ui.menu = (() => {
 					}
 					tabsData[tab.id].autoSave = event.checked;
 					await singlefile.tabsData.set(tabsData);
+					singlefile.ui.saveTab(tab, { autoSave: true });
 					refreshExternalComponents(tab.id, { autoSave: true });
 				}
 				if (event.menuItemId == MENU_ID_AUTO_SAVE_DISABLED) {
@@ -246,20 +194,17 @@ singlefile.ui.menu = (() => {
 					Object.keys(tabsData).forEach(tabId => tabsData[tabId].autoSave = false);
 					tabsData.autoSaveUnpinned = tabsData.autoSaveAll = false;
 					await singlefile.tabsData.set(tabsData);
+				//	singlefile.ui.saveTab(tab, { autoSave: false });
+					singlefile.ui.button.onReset(tab.id);
+			  //	refresh(tab.id, getProperties({ autoSave: false }, "", DEFAULT_COLOR, DEFAULT_TITLE));
 					refreshExternalComponents(tab.id, { autoSave: false });
 				}
-				if (event.menuItemId == MENU_ID_AUTO_SAVE_ALL) {
-					const tabsData = await singlefile.tabsData.get();
-					tabsData.autoSaveAll = event.checked;
-					await singlefile.tabsData.set(tabsData);
-					refreshExternalComponents(tab.id, { autoSave: true });
-				}
-				if (event.menuItemId == MENU_ID_AUTO_SAVE_UNPINNED) {
-					const tabsData = await singlefile.tabsData.get();
-					tabsData.autoSaveUnpinned = event.checked;
-					await singlefile.tabsData.set(tabsData);
-					refreshExternalComponents(tab.id, { autoSave: true });
-				}
+		//		if (event.menuItemId == MENU_ID_AUTO_SAVE_ALL) {
+			//		const tabsData = await singlefile.tabsData.get();
+			//		tabsData.autoSaveAll = event.checked;
+			//		await singlefile.tabsData.set(tabsData);
+			//		refreshExternalComponents(tab.id, { autoSave: true });
+		//		}
 				if (event.menuItemId.startsWith(MENU_ID_SELECT_PROFILE_PREFIX)) {
 					const [profiles, tabsData] = await Promise.all([singlefile.config.getProfiles(), singlefile.tabsData.get()]);
 					const profileId = event.menuItemId.split(MENU_ID_SELECT_PROFILE_PREFIX)[1];
@@ -299,9 +244,11 @@ singlefile.ui.menu = (() => {
 	async function refreshExternalComponents(tabId) {
 		await singlefile.autosave.refresh();
 		singlefile.ui.button.refresh(tabId);
+		chrome.storage.local.set({'tabId': tabId});
 	}
 
 	async function refreshTab(tab) {
+		chrome.storage.local.set({'tabId': tab.id});
 		if (BROWSER_MENUS_API_SUPPORTED) {
 			const tabsData = await singlefile.tabsData.get();
 			const promises = [];
@@ -309,8 +256,7 @@ singlefile.ui.menu = (() => {
 				const disabled = Boolean(!tabsData[tab.id] || !tabsData[tab.id].autoSave);
 				promises.push(menus.update(MENU_ID_AUTO_SAVE_DISABLED, { checked: disabled }));
 				promises.push(menus.update(MENU_ID_AUTO_SAVE_TAB, { checked: !disabled }));
-				promises.push(menus.update(MENU_ID_AUTO_SAVE_UNPINNED, { checked: Boolean(tabsData.autoSaveUnpinned) }));
-				promises.push(menus.update(MENU_ID_AUTO_SAVE_ALL, { checked: Boolean(tabsData.autoSaveAll) }));
+		//		promises.push(menus.update(MENU_ID_AUTO_SAVE_ALL, { checked: Boolean(tabsData.autoSaveAll) }));
 				if (tab && tab.url) {
 					let selectedEntryId = MENU_ID_ASSOCIATE_WITH_PROFILE_PREFIX + "default";
 					let title = browser.i18n.getMessage("menuCreateDomainRule");

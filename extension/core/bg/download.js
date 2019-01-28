@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -60,33 +60,14 @@ singlefile.download = (() => {
 	return { downloadPage };
 
 	async function downloadPage(page, options) {
-		const downloadInfo = {
-			url: page.url,
-			saveAs: options.confirmFilename,
-			filename: page.filename,
-			conflictAction: options.filenameConflictAction
-		};
-		if (options.incognito) {
-			downloadInfo.incognito = true;
-		}
-		const downloadId = await browser.downloads.download(downloadInfo);
 		return new Promise((resolve, reject) => {
 			browser.downloads.onChanged.addListener(onChanged);
 
 			function onChanged(event) {
-				if (event.id == downloadId && event.state) {
-					if (event.state.current == "complete") {
-						URL.revokeObjectURL(page.url);
 						resolve({});
 						browser.downloads.onChanged.removeListener(onChanged);
-					}
-					if (event.state.current == "interrupted" && (!event.error || event.error.current != "USER_CANCELED")) {
-						URL.revokeObjectURL(page.url);
-						reject(new Error(event.state.current));
-						browser.downloads.onChanged.removeListener(onChanged);
-					}
+
 				}
-			}
 		});
 	}
 

@@ -1,11 +1,11 @@
 {
     "extensionDescription": {
-        "message": "Save a complete page into a single HTML file",
+        "message": "Send Page to Lingoport InContext Server",
         "description": "Description of the extension."
     },
     "menuSavePage": {
-        "message": "Save page with SingleFile",
-        "description": "Menu entry: 'Save page with SingleFile'"
+        "message": "Send Page to Lingoport InContext Server",
+        "description": "Menu entry: 'Send Page to Lingoport InContext Server'"
     },
     "menuSelectProfile": {
         "message": "Select the default profile",
@@ -40,52 +40,32 @@
         "description": "Menu entry: 'Save all tabs'"
     },
     "menuAutoSave": {
-        "message": "Auto-save",
-        "description": "Menu entry: 'Auto-save'"
+        "message": "Auto-capture",
+        "description": "Menu entry: 'Auto-capture'"
     },
     "menuAutoSaveDisabled": {
-        "message": "Disabled",
-        "description": "Menu entry: 'Auto-save' > Disabled'"
+        "message": "Disabled Auto-capture",
+        "description": "Menu entry: 'Disabled'"
     },
     "menuAutoSaveTab": {
-        "message": "Auto-save this tab",
-        "description": "Menu entry: 'Auto-save' > Auto-save this tab'"
+        "message": "Auto-capture this tab",
+        "description": "Menu entry: 'Auto-capture this tab'"
     },
     "menuAutoSaveUnpinnedTabs": {
-        "message": "Auto-save unpinned tabs",
-        "description": "Menu entry: 'Auto-save' > Auto-save unpinned tabs'"
-    },
-    "options_userNameLabel": {
-  		"message": "Username",
-  		"description": "Username"
-  	},
-  	"options_urlLabel": {
-  		"message": "Jenkins URL",
-  		"description": "Jenkins URL"
-  	},
-    "options_apitokenLabel": {
-    	"message": "API Token",
-    	"description": "API Token"
-    },
-    "options_authenicate": {
-    	"message": "Save Credentials",
-    	"description": "Save Credentials"
-    },
-    "options_emailLabel": {
-    	"message": "Email",
-    	"description": "Email"
+        "message": "Auto-capture unpinned tabs",
+        "description": "Menu entry: 'Auto-capture' > Auto-capture unpinned tabs'"
     },
     "menuAutoSaveAllTabs": {
-        "message": "Auto-save all tabs",
-        "description": "Menu entry: 'Auto-save' > Auto-save all tabs'"
+        "message": "Auto-capture all tabs",
+        "description": "Menu entry: 'Auto-capture' > Auto-capture all tabs'"
     },
     "buttonDefaultTooltip": {
-        "message": "Save page with SingleFile",
-        "description": "Button title: 'Save page with SingleFile'"
+        "message": "Send Page to Lingoport InContext Server",
+        "description": "Button title: 'Send Page to Lingoport InContext Server'"
     },
     "buttonInitializingTooltip": {
-        "message": "Initializing SingleFile",
-        "description": "Button title during initialization: 'Initializing SingleFile (x/2)'"
+        "message": "Initializing...",
+        "description": "Button title during initialization: 'Initializing'"
     },
     "buttonInitializingBadge": {
         "message": "•••",
@@ -104,12 +84,12 @@
         "description": "Badge label for unexpected errors"
     },
     "buttonAutoSaveActiveTooltip": {
-        "message": "Auto-save active",
-        "description": "Button title: 'Auto-save active'"
+        "message": "Auto-capture active",
+        "description": "Button title: 'Auto-capture active'"
     },
     "buttonAutoSaveActiveBadge": {
         "message": "[A]",
-        "description": "Badge label when auto-save is active"
+        "description": "Badge label when Auto-capture is active"
     },
     "optionsTitle": {
         "message": "Options",
@@ -252,8 +232,8 @@
         "description": "Options page label: 'remove audio sources'"
     },
     "optionsAutoSaveSubTitle": {
-        "message": "Auto-save",
-        "description": "Options sub-title: 'Auto-save'"
+        "message": "Auto-capture",
+        "description": "Options sub-title: 'Auto-capture'"
     },
     "optionsAutoSettingsSubTitle": {
         "message": "Auto-settings rules",
@@ -280,16 +260,16 @@
         "description": "Options label in the Auto-settings rules: 'Profile'"
     },
     "optionsAutoSettingsAutoSaveProfile": {
-        "message": "Auto-save profile",
-        "description": "Options label in the Auto-settings rules: 'Auto-save profile'"
+        "message": "Auto-capture profile",
+        "description": "Options label in the Auto-settings rules: 'Auto-capture profile'"
     },
     "optionsAutoSettingsShowAllProfiles": {
         "message": "display all profiles",
         "description": "Options label in the Auto-settings rules: 'display all profiles'"
     },
     "optionsAutoSettingsShowAutoSaveProfile": {
-        "message": "display 'Auto-save profile' column",
-        "description": "Options label in the Auto-settings rules: 'display 'Auto-save profile' column'"
+        "message": "display 'Auto-capture profile' column",
+        "description": "Options label in the Auto-settings rules: 'display 'Auto-capture profile' column'"
     },
     "optionsUpdateRuleTooltip": {
         "message": "Update the rule",
@@ -312,25 +292,93 @@
         "description": "Popup text 'Confirm deletion of the selected rule' in the options page"
     },
     "optionAutoSaveLoadOrUnload": {
-        "message": "auto-save after page load or on page unload",
-        "description": "auto-save after page load or on page unload"
+        "message": "Auto-capture after page load or on page unload",
+        "description": "Auto-capture after page load or on page unload"
     },
     "optionAutoSaveLoad": {
-        "message": "auto-save after page load",
-        "description": "Options page label: 'auto-save after page load'"
+        "message": "Auto-capture after page load",
+        "description": "Options page label: 'Auto-capture after page load'"
     },
     "optionAutoSaveUnload": {
-        "message": "auto-save on page unload",
-        "description": "Options page label: 'auto-save on page unload'"
+        "message": "Auto-capture on page unload",
+        "description": "Options page label: 'Auto-capture on page unload'"
     },
     "optionAutoSaveDelay": {
-        "message": "auto-save waiting delay after page load (sec.)",
-        "description": "Options page label: 'auto-save waiting delay after page load (sec.)'"
+        "message": "Auto-capture waiting delay after page load (sec.)",
+        "description": "Options page label: 'Auto-capture waiting delay after page load (sec.)'"
     },
     "optionsMiscSubTitle": {
         "message": "Misc.",
         "description": "Options sub-title: 'Misc.'"
     },
+    "options_apitokenLabel": {
+  		"message": "Chrome Token",
+  		"description": "Chrome Token"
+  	},
+
+  	"options_authenicate": {
+  		"message": "Save Credentials",
+  		"description": "Save Credentials"
+  	},
+
+  	"options_emailLabel": {
+  		"message": "Email",
+  		"description": "Email"
+  	},
+
+    "options_emailerror": {
+     "message": "Invalid Email",
+     "description": "Invalid Email"
+},
+
+  	"options_emailInvalidTitle": {
+  		"message": "Email address syntax may be invalid.",
+  		"description": "Email address syntax may be invalid."
+  	},
+
+  	"options_successful": {
+  		"message": "Authentication Successful",
+  		"description": "Authentication Successful"
+  	},
+
+  	"options_successful_saved": {
+  		"message": "Authentication Successful-Options Saved",
+  		"description": "Authentication Successful-Options Saved"
+  	},
+
+  	"options_unsuccessful": {
+  		"message": "Authentication failed",
+  		"description": "Authentication failed"
+  	},
+
+  	"options_unsuccessful_msg": {
+  		"message": "Authentication failed-$MSG$",
+  		"description": "Authentication failed",
+  		"placeholders": {
+  			"MSG": {
+  				"content" : "$1"
+  			}
+  		}
+  	},
+    "options_urlerror": {
+  		"message": "URL must start with 'http' or 'https'",
+  		"description": "URL must start with 'http' or 'https'"
+  	},
+
+  	"options_title": {
+  		"message": "Options",
+  		"description": "Options"
+  	},
+
+  	"options_userNameLabel": {
+  		"message": "Username",
+  		"description": "Username"
+  	},
+
+  	"options_urlLabel": {
+  		"message": "InContext Server URL",
+  		"description": "InContext Server URL"
+  	},
     "optionBackgroundSave": {
         "message": "save pages in background",
         "description": "Options page label: 'save pages in background'"
@@ -422,5 +470,9 @@
     "profileRenamePrompt": {
         "message": "Enter a new name for the selected profile",
         "description": "Popup text 'Enter a new name for the selected profile' in the options page"
-    }
+    },
+    "button_authenicate": {
+  		"message": "Validate Credentials",
+  		"description": "Validate Credentials"
+  	}
 }

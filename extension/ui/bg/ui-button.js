@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 
 singlefile.ui.button = (() => {
 
-	const DEFAULT_ICON_PATH = "/extension/ui/resources/icon_16.png";
-	const WAIT_ICON_PATH_PREFIX = "/extension/ui/resources/icon_16_wait";
+	const DEFAULT_ICON_PATH = "/extension/ui/resources/lrm-incontext-16.png";
+	const WAIT_ICON_PATH_PREFIX = "/extension/ui/resources/";
 	const DEFAULT_TITLE = browser.i18n.getMessage("buttonDefaultTooltip");
-	const DEFAULT_COLOR = [2, 147, 20, 255];
+	const DEFAULT_COLOR = [220,220,220, 255];
 
 	browser.browserAction.onClicked.addListener(async tab => {
 		if (singlefile.ui.isAllowedURL(tab.url)) {
@@ -73,6 +73,7 @@ singlefile.ui.button = (() => {
 		onInitialize,
 		onProgress,
 		onEnd,
+		onReset,
 		onError,
 		refresh: async tabId => {
 			if (tabId) {
@@ -83,32 +84,30 @@ singlefile.ui.button = (() => {
 	};
 
 	function onReset(tabId) {
-		refresh(tabId, getProperties({}, "", DEFAULT_COLOR, DEFAULT_TITLE));
+		refresh(tabId, getProperties({}, "", DEFAULT_COLOR, DEFAULT_TITLE,DEFAULT_ICON_PATH));
 	}
 
-	function onInitialize(tabId, options, step) {
-		if (step == 1) {
-			onReset(tabId);
-		}
-		refresh(tabId, getProperties(options, browser.i18n.getMessage("buttonInitializingBadge"), step == 1 ? DEFAULT_COLOR : [4, 229, 36, 255], browser.i18n.getMessage("buttonInitializingTooltip") + " (" + step + "/2)", WAIT_ICON_PATH_PREFIX + "0.png"));
+	function onInitialize(tabId, options) {
+		chrome.storage.local.set({'tabId': tabId});
+		refresh(tabId, getProperties(options, "",  DEFAULT_COLOR, browser.i18n.getMessage("buttonInitializingTooltip"), WAIT_ICON_PATH_PREFIX + "in-context-status-running.png"));
 	}
 
 	function onError(tabId, options) {
-		refresh(tabId, getProperties(options, browser.i18n.getMessage("buttonErrorBadge"), [229, 4, 12, 255]));
+		refresh(tabId, getProperties(options, "", [4, 229, 36, 255],"",WAIT_ICON_PATH_PREFIX + "in-context-status-error.png"));
 	}
 
 	function onCancelled(tabId, options) {
-		refresh(tabId, getProperties(options, "", DEFAULT_COLOR, DEFAULT_TITLE));
+		refresh(tabId, getProperties(options, "", DEFAULT_COLOR, DEFAULT_TITLE,DEFAULT_ICON_PATH));
 	}
 
 	function onEnd(tabId, options) {
-		refresh(tabId, getProperties(options, browser.i18n.getMessage("buttonOKBadge"), [4, 229, 36, 255]));
+		refresh(tabId, getProperties(options, "", [4, 229, 36, 255],"",WAIT_ICON_PATH_PREFIX + "in-context-status-success.png"));
 	}
 
 	function onProgress(tabId, index, maxIndex, options) {
 		const progress = Math.max(Math.min(20, Math.floor((index / maxIndex) * 20)), 0);
 		const barProgress = Math.min(Math.floor((index / maxIndex) * 8), 8);
-		const path = WAIT_ICON_PATH_PREFIX + barProgress + ".png";
+		const path = WAIT_ICON_PATH_PREFIX + "in-context-status-running.png";
 		refresh(tabId, getProperties(options, "", [4, 229, 36, 255], browser.i18n.getMessage("buttonSaveProgressTooltip") + (progress * 5) + "%", path, [128, 128, 128, 255]));
 	}
 
@@ -134,9 +133,7 @@ singlefile.ui.button = (() => {
 	}
 
 	function getCurrentProperties(tabId, options) {
-		if (options.autoSave) {
-			return getProperties(options);
-		} else {
+		if(options.autoSave){
 			const tabsData = singlefile.tabsData.getTemporary();
 			const tabData = tabsData[tabId] && tabsData[tabId].button;
 			if (tabData) {
@@ -144,17 +141,20 @@ singlefile.ui.button = (() => {
 			} else {
 				return getProperties(options);
 			}
+		}else{
+			return getProperties(options);
 		}
 	}
 
 	function getProperties(options, text, color, title = DEFAULT_TITLE, path = DEFAULT_ICON_PATH, autoColor = [208, 208, 208, 255]) {
 		return {
-			setBadgeText: { text: options.autoSave ? browser.i18n.getMessage("buttonAutoSaveActiveBadge") : (text || "") },
-			setBadgeBackgroundColor: { color: options.autoSave ? autoColor : color || DEFAULT_COLOR },
-			setTitle: { title: options.autoSave ? browser.i18n.getMessage("buttonAutoSaveActiveTooltip") : title },
-			setIcon: { path: options.autoSave ? DEFAULT_ICON_PATH : path }
+			setBadgeText: { text: "" },
+			setBadgeBackgroundColor: { color: DEFAULT_COLOR },
+			setTitle: { title:  title },
+			setIcon: { path: path }
 		};
 	}
+
 
 	async function refresh(tabId, tabData) {
 		const tabsData = singlefile.tabsData.getTemporary();
@@ -176,7 +176,7 @@ singlefile.ui.button = (() => {
 
 	async function refreshAsync(tabId, tabData, oldTabData) {
 		for (const browserActionMethod of Object.keys(tabData)) {
-			if (browserActionMethod == "setBadgeBackgroundColor" || !oldTabData[browserActionMethod] || JSON.stringify(oldTabData[browserActionMethod]) != JSON.stringify(tabData[browserActionMethod])) {
+			if (!oldTabData[browserActionMethod] || JSON.stringify(oldTabData[browserActionMethod]) != JSON.stringify(tabData[browserActionMethod])) {
 				await refreshProperty(tabId, browserActionMethod, tabData[browserActionMethod]);
 			}
 		}

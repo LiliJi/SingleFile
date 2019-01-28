@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ singlefile.autosave = (() => {
 				index++;
 				singlefile.ui.onProgress(tabId, index, maxIndex, { autoSave: true });
 			} else if (event.type == event.PAGE_ENDED) {
-				singlefile.ui.onEnd(tabId, { autoSave: true });
+			//	singlefile.ui.onEnd(tabId, { autoSave: true });
 			}
 		};
 		const processor = new (SingleFileBrowser.getClass())(options);

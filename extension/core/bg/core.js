@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ singlefile.core = (() => {
 	async function saveTab(tab, options) {
 		const tabsData = await singlefile.tabsData.get();
 		const mergedOptions = await singlefile.config.getOptions(tabsData.profileName, tab.url);
-		Object.keys(options).forEach(key => mergedOptions[key] = options[key]);
-		return singlefile.runner.saveTab(tab, mergedOptions);
+		//Object.keys(options).forEach(key => mergedOptions[key] = options[key]);
+		await browser.tabs.sendMessage(tab.id, { autoSavePage: true, options });
 	}
 
 	async function autoSaveTab(tab) {

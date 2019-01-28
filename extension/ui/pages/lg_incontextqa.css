@@ -1,0 +1,166 @@
+/* navbar css is from bootstrap - https://getbootstrap.com/docs/4.0/components/navbar/ */
+/* Icons background color was changed to this background color rgb(241, 242, 237) */
+/* Button blue comes from sonar #236a97 */
+.navbar.navbar-light.lg-nav {
+	background: #F1F2ED;
+    color: #5A7811;
+    align-items: center;
+    justify-content: left;
+    line-height: 32px;
+}
+
+.navbar-brand.navbar-brand-custom.lg-nav  {
+	vertical-align: middle;
+}
+
+/* If the popup is too small for the text, then the page will be loaded continuously */
+.lg-popup-body {
+   /* chrome extension max width is 800px */
+   width:100%; 
+   /* chrome extension max height is 600px */
+   height:100%; 
+   /* set to maximum, the user is unable to resize the window */
+   min-height:150px;
+   min-width:800px;
+}
+
+/* If the options is too small for the text, then the page will be loaded continuously */
+.lg-options-body {
+   /* chrome extension max width is 800px */
+   width:100%; 
+   /* chrome extension max height is 600px */
+   height:100%; 
+   /* set to maximum, the user is unable to resize the window */
+   min-height:400px;
+   min-width:350px;
+}
+
+.hidden{
+   visibility:hidden;
+}
+
+.modal-body {
+	background: #F1F2ED;
+    color: #5A7811;
+}
+
+.lg-widget {
+	overflow-x:auto;
+}
+
+.lg-widget-table {
+	border-collapse: collapse;
+	display: table; 
+	font-size: 12px;
+	margin-bottom: 5px;
+    text-align: left; 
+    width: 100%; 
+}
+
+.lg-widget-table th {
+    background: none repeat scroll 0 0 #EDF2E1;
+    border-bottom: 1px solid #FFFFFF;
+    border-top: 4px solid #77AE00;
+    color: #5B8208;
+    font-size: 13px;
+    font-weight: normal;
+    padding: 8px;
+}
+	
+.lg-widget-table td {
+	padding: 8px;	
+	background: none repeat scroll 0 0 #EDEDED;
+    border-bottom: 1px solid #FFFFFF;
+    border-top: 1px solid transparent;
+    color: #4F7007;
+	text-align: left;
+}
+
+.lg-widget-table th.text-center,
+.lg-widget-table td.text-center {
+	text-align: center;
+	vertical-align: center;
+}
+.lg-widget-table th.text-left,
+.lg-widget-table td.text-left {
+	text-align: left;
+	vertical-align: center;
+}
+
+.dvButton {
+	width:225px;
+}
+
+
+/* Button colors come from Sonar .button,button,input[type=button] */
+/* #2a3d69 */
+.btn.btn-primary.lg-btn {
+	border-color:#236a97;
+	color:#236a97;
+	background:#e9e9e9;
+	font-weight: bold;
+}
+
+.btn.btn-primary.lg-btn:disabled {
+	color:#bbb;
+	border-color:#ddd;
+	background:#ebebeb;
+	cursor:not-allowed;
+	font-weight: bold;
+}
+
+.btn.btn-primary.lg-btn.error {
+	color:#bbb;
+	border-color:#ddd;
+	background:#ebebeb;
+	cursor:not-allowed;
+	font-weight: bold;
+}
+
+.btn.btn-primary.lg-btn.error:enabled:focus,
+.btn.btn-primary.lg-btn.error:enabled:hover {
+	color:#bbb;
+	border-color:#ddd;
+	background:#ebebeb;
+	cursor:not-allowed;
+	font-weight: bold;
+} 
+
+.btn.btn-primary.lg-btn.error:disabled:focus,
+.btn.btn-primary.lg-btn.error:disabled:hover {
+	color:#bbb;
+	border-color:#ddd;
+	background:#ebebeb;
+	cursor:not-allowed;
+	font-weight: bold;
+}
+
+.btn.btn-primary.lg-btn:disabled:focus,
+.btn.btn-primary.lg-btn:disabled:hover {
+	color:#bbb;
+	border-color:#ddd;
+	background:#ebebeb;
+	cursor:not-allowed;
+	font-weight: bold;
+}
+
+.btn.btn-primary.lg-btn:enabled:focus,
+.btn.btn-primary.lg-btn:enabled:hover {
+	border-color:#236a97;
+	color:#e9e9e9;
+	background:#236a97;
+	font-weight: bold;
+	/* override bootstrap 3D effect on focus and hover */
+	box-shadow: inset 0 0 0 0;
+	text-shadow: 0 0 0;
+} 
+
+
+.lg-text {
+	color:#337ab7;
+}
+.form-label.col-sm-2.error {
+	background:#dd7a75;
+	color:#FFFFFF;
+}
+

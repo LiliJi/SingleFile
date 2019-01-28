@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -48,6 +48,12 @@ this.singlefile.bootstrap = this.singlefile.bootstrap || (async () => {
 		if ((!autoSavingPage || autoSaveTimeout) && !singlefile.pageAutoSaved) {
 			autoSavingPage = true;
 			options.sessionId = 0;
+			chrome.storage.local.get('tabId', function (result) {
+				options = {};
+				tabId = result.tabId;
+				options.tabId = tabId;
+				singlefile.ui.button.onError(tabId, options);
+			});			
 			if (options.autoSaveDelay && !autoSaveTimeout) {
 				autoSaveTimeout = setTimeout(() => {
 					autoSavePage();

@@ -1,7 +1,7 @@
 /*
  * Copyright 2010-2019 Gildas Lormeau
  * contact : gildas.lormeau <at> gmail.com
- * 
+ *
  * This file is part of SingleFile.
  *
  *   SingleFile is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ singlefile.ui = (() => {
 			const tabId = tab.id;
 			options.tabId = tabId;
 			try {
-				singlefile.ui.button.onInitialize(tabId, options, 1);
+				singlefile.ui.button.onInitialize(tabId, options);
 				if (options.autoSave) {
 					await singlefile.core.autoSaveTab(tab, options);
 				} else {
 					await singlefile.core.saveTab(tab, options);
 				}
-				singlefile.ui.button.onInitialize(tabId, options, 2);
+				singlefile.ui.button.onInitialize(tabId, options);
 			} catch (error) {
 				console.log(error); // eslint-disable-line no-console
 				singlefile.ui.button.onError(tabId, options);

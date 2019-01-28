@@ -1,13 +1,14 @@
 {
-	"name": "Lingoport InContext",
+	"name": "Lingoport InContext Capture",
 	"author": "Lili Ji",
-	"homepage_url": "https://github.com/gildas-lormeau/SingleFile",
+	"short_name": "InContextCapture",
+	"homepage_url": "https://lingoport.com/",
 	"icons": {
-		"16": "extension/ui/resources/icon_16.png",
-		"48": "extension/ui/resources/icon_48.png",
-		"128": "extension/ui/resources/icon_128.png"
+		"16": "extension/ui/resources/lrm-incontext-16.png",
+		"48": "extension/ui/resources/lrm-incontext-48.png",
+		"128": "extension/ui/resources/lrm-incontext-128.png"
 	},
-	"version": "1.9.25",
+	"version": "1.0.1",
 	"description": "__MSG_extensionDescription__",
 	"content_scripts": [
 		{
@@ -46,8 +47,10 @@
 			]
 		}
 	],
+  "content_security_policy": "script-src 'self' https://ajax.googleapis.com https://maxcdn.bootstrapcdn.com; object-src 'self'",
 	"background": {
 		"scripts": [
+			"extension/ui/pages/jquery.min.js",
 			"lib/browser-polyfill/chrome-browser-polyfill.js",
 			"lib/fetch/bg/fetch.js",
 			"lib/fetch/content/fetch.js",
@@ -60,7 +63,6 @@
 			"extension/core/bg/core.js",
 			"extension/ui/bg/bg-ui.js",
 			"extension/ui/bg/ui-menu.js",
-			"lib/single-file/modules/jquery.min.js",
 			"extension/ui/bg/ui-button.js",
 			"lib/lazy/bg/bg-lazy-timeout.js",
 			"lib/single-file/vendor/css-minifier.js",
@@ -82,15 +84,13 @@
 		],
 		"persistent": false
 	},
-
 	"options_page": "extension/ui/pages/options.html",
-  "options_ui": {
-    "page": "extension/ui/pages/options.html",
-    "chrome_style": true
-  },
-
+	"options_ui": {
+		"page": "extension/ui/pages/options.html",
+		"chrome_style": true
+	},
 	"browser_action": {
-		"default_icon": "extension/ui/resources/icon_16.png",
+		"default_icon": "extension/ui/resources/lrm-incontext-16.png",
 		"default_title": "__MSG_buttonDefaultTooltip__"
 	},
 	"commands": {
@@ -105,14 +105,14 @@
 	"permissions": [
 		"contextMenus",
 		"downloads",
+		"menus",
 		"storage",
 		"tabs",
-		"menus",
 		"<all_urls>",
 		"http://*/",
-		"https://*/"
+		"https://*/",
+    "file://*/*"
 	],
-
 	"incognito": "spanning",
 	"web_accessible_resources": [
 		"lib/lazy/web/web-lazy-loader-before.js",

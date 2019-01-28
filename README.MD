@@ -1,71 +1,116 @@
-# SingleFile
-SingleFile is a WebExtension compatible with Chrome, Firefox (Desktop and Mobile), and Opera that helps you to save a complete web page into a single HTML file.
+# Lingoport InContext Capture
+Lingoport Incontext Capture is a WebExtension compatible with Chrome that helps you to send a web page to a Lingoport InContext Server.
 
-## Table of Contents
- - [Demo](#demo)
- - [Install](#install)
- - [Getting started](#getting-started)
- - [Additional notes](#additional-notes)
- - [More info](#more-info)
- - [Statistics (Firefox)](#statistics-firefox)
- - [Known issues](#known-issues)
- - [Troubleshooting unknown issues](#troubleshooting-unknown-issues)
- - [Contributors](#contributors)
- - [Code derived from third party projects](#code-derived-from-third-party-projects)
- - [License](#license)
+## Chrome Extension Overview
+Unlike Chrome apps (which are being discontinued), extensions are small programs
+that download to your computer in the form of a CRX file.
+They're saved to a specific location within Chrome's installation folder, so you can't
+typically choose where on your computer to save the extension.
+Chrome stores it somewhere safe and can use it anytime you open the browser.
 
-## Demo
-https://www.youtube.com/watch?v=RdV8DBW5b0g
+To view the location:
+* open up a Chrome browser:
+* type chrome:extension to view the id of the InContext Capture extension
+* type chrome:version
+  * The *profile path* is the location, on your local machine, of the user data that is stored by the Chrome Browser
+* go to the *profile path* on your local machine.
+  * The local extension settings are in the *Local Extension Settings* sub-folder
+  * The InContext Capture local storage is located in the folder where the name matches the extension id.
+  * Example path: *C:\Users\linda\AppData\Local\Google\Chrome\User Data\Default\Local Extension Settings\fkabnkhcnendkljbipfpkgdmncmehala*
+
+See https://developer.chrome.com/extensions for more details.
+
+## Components
+### Option Page
+The options page will contain the credentials for sending information to InContext Server.
+The options page is available on the extensions management page at chrome:extensions as well
+as a button on the popup menu.
+
+Files:
+* options.js
+* options.html
+
+### Manifest File
+A JSON-formatted manifest file that describe the LRM-Incontext Chrome Extension.
+See https://developer.chrome.com/extensions/manifest
+
+Field Summary:
+* background - Once it has been loaded, a background page will stay running as long as it
+is performing an action, such as calling a Chrome API or issuing a network request
+	* persistence is false
+	* scripts - an array of background scripts
+* browser-action - put icons in the main Google Chrome toolbar, to the right of the address bar.
+Also defines the popup html
+* content_scripts - files that run in content of the web page. By using the standard
+Document Object Model (DOM), they are able to read details of the web pages the browser visits,
+make changes to them and pass information to their parent extension and the background script.
+	* matches - Specifies which pages this content script will be injected into. Chrome extension
+	supports the following schemas; http, https, file, ftp. If a URL does not have this schema then
+	the Incontext Capture menu will not display its submenu. In addition, in order to access a
+	schema file, the user must enable 'Allow access to file URLs' located in the extensions
+	management page (chrome://extensions)
+	* css - The list of CSS files to be injected into matching pages
+	* js - The list of JavaScript files to be injected into matching pages.
+* content_security_policy - mitigates potential cross-site scripting issues
+* default_locale - required for localization
+* description - The description should be suitable for both the browser's extension
+management UI and the Chrome Web Store
+* icons - icons that represent the extension (required to be square)
+	* 16x16 - icon is used as the favicon for an extension's pages
+	* 48x48 - icon is used in the extensions management page (chrome://extensions)
+	* 128x128 - icon is used during installation and by the Chrome Web Store
+* permissions - allows specific access to chrome's API
+	* activeTabs - access to browser action and context menu item
+	* contextMenus - access to the chrome.contextMenus API.
+	* storage - access to the chrome.storage API. Incontext Capture uses local storage which
+	has a limit of 5MB
+	* tabs - access to privileged fields of the Tab objects used by several APIs
+	including chrome.tabs and chrome.windows.
+	* match patterns such as http://*/. This should match what is defined in 'content_scripts'
+	and must be a chrome extension supported schema.
+* options_page - the page that will be displayed by navigating to the extension management page
+at chrome://extensions
+* options_ui - Allows for the option page is be displayed by clicking on the 'Options' icon in the
+navigation bar of the Incontext Capture extension.
+* short_name - (maximum of 12 characters recommended) is a short version of the extension's name
+
+File:
+* manifest.json
+
+## Publishing the extension
+* Sign into the Chrome Extension Developers Dashboard
+	* https://chrome.google.com/webstore/developer/dashboard
+	* The login needs to be the login that is used to publish the extension
+* In 'Your Listings', the current extension version is displayed.
+* Upload a new version:
+	* Create a zip file of the InContext repo except for the git files
+	* Click the 'edit' button for the extension listing
+	* Upload the new zip file and click 'Publish'.
+* Permissions - currently, the extension is 'Private'.
+
+## Adding the extension
+The Lingoport InContext Capture extension is private and can only be accessed one of 2 ways:
+* Google account is added to the testers
+* Google account is added to the *lqa_lingoport* group
+
+To add the latest extension to Chrome:
+* User signs into the Chrome Web Store using their google account where they are an
+authorized user - https://chrome.google.com/webstore/category/extensions
+* After signin, go to link to the extension -
+https://chrome.google.com/webstore/detail/lingoport-incontext-captu/fkabnkhcnendkljbipfpkgdmncmehala
+* If the user has access, they will see the Lingoport InContext Capture extension with the option to
+'Add to Chrome' otherwise they will get a page not found error.
+* Click on the 'Add to Chrome' button. The extension will be added to Google Chrome.
+* For local file access (i.e. file://), verify that the InContext Capture extension allows for locale file access.
+	* Right-click on the Incontext Capture extension and select 'Manage Extensions'
+	* Turn option 'Allow access of file URL's' on (to the right)
+	* Close all chrome windows and reopen chrome through the console. To determine where chrome.exe is located
+on your machine type *chrome://version* into your Chrome Browser and search for *Executable Path*.	i.e.
+	*"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe" --allow-file-access-from-files*
+
 
 ## Install
- - Firefox Add-ons: https://addons.mozilla.org/en-US/firefox/addon/single-file
- - Chrome Web Store: https://chrome.google.com/extensions/detail/mpiodijhokgodhhofbcjdecpffjipkle
- - Opera: The extension is not on the store yet, you must download the zip file (https://github.com/gildas-lormeau/SingleFile/archive/master.zip) and install it manually
-
-## Getting started
-- Wait until the page is fully loaded, you may need to scroll down the entire page to be sure all elements are loaded.
-- Click on the SingleFile button in the extension toolbar to save the page.
-
-## Additional notes
- - To save multiple tabs, select them first and click on the SingleFile button.
- - Open the context menu by right-clicking the SingleFile button in the extension toolbar or on the webpage. It allows you to save:
-   - the current tab,
-   - or the selected content,
-   - or the selected frame.
- - You can also process multiple tabs in one click and save:
-   - the selected tabs,
-   - or the unpinned tabs,
-   - or all the tabs.
- - The context menu also allows you to activate the auto-save of:
-   - the current tab,
-   - or the unpinned tabs,
-   - or all the tabs.
- - With auto-save active, pages are automatically saved every time after being loaded (or before being unloaded if not).
- - Right-click on the SingleFile button and select "Options"/"Manage extension" to open the options page.
- - The default save folder is the download folder configured in your browser, cf. about:preferences in Firefox and chrome://settings in Chrome.
- - You can use the shortcut Ctrl+Shift+X to save current or selected tabs in Chrome. Go to chrome://extensions/shortcuts to change it.
-
-## More info
-See the extension help in the options page for more detailed information about the options and technical notes.
-
-## Statistics (Firefox)
-See https://addons.mozilla.org/en-US/firefox/addon/single-file/statistics/?last=90
-
-## Known Issues
-- All browsers:
-  - For security reasons, you cannot save pages hosted on https://chrome.google.com or https://addons.mozilla.org.
-  - The last saved path cannot be remembered by default. To circumvent this limitation, disable the option "Misc > Save pages in background".
-- Chrome/Opera:
-  - You must enable the option "Allow access to file URLs" in the extension page to display the infobar when viewing a saved page, or to save a page stored on the filesystem.  
-
-## Troubleshooting unknown issues
-Please follow these steps if you find an unknown issue:
-- Save the page in incognito.
-- If saving page in incognito did not fix the issue, reset SingleFile options.
-- If resetting options did not fix the issue, restart the browser.
-- If restarting the browser did not fix the issue, try to disable all other extensions to see if there is a conflict.
-- If there is a conflict then try to determine against which extension(s).
-- Please report the issue with a short description on how to reproduce it here: https://github.com/gildas-lormeau/SingleFile/issues.
+ - Chrome Web Store:https://chrome.google.com/webstore/detail/lingoport-incontext-captu/fkabnkhcnendkljbipfpkgdmncmehala/related
 
 ## Contributors
 - Chinese translation done by yfdyh000 (https://github.com/yfdyh000), KrasnayaPloshchad (https://github.com/KrasnayaPloshchad)

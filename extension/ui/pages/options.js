@@ -25,9 +25,14 @@ var incontextqa_options = {
     emailLabelId: 'emailLabel',
 	authenicateBtnId: 'authenicateBtn',
 	labelStatus: 'status',
+	emailInvalid: 'invalidEmail',
+	labelStyle: 'form-label col-sm-2',
+	labelStyleError: 'form-label col-sm-2 error',
+	labelStyleHidden: 'form-label col-sm-2 hidden',
 
 	//messaging
-	checkCredentialsMsg: 'incontextqa_checkcredentials_msgtype'
+	checkCredentialsMsg: 'incontextqa_checkcredentials_msgtype',
+	jenkinsInvalidUrl: 'invalidURL'
 
 }
 function enable_button() {
@@ -38,7 +43,6 @@ function enable_button() {
 
 	var isDisabled = true;
 	if ((url != undefined) && (url.trim().length > 0)
-		&& (username != undefined) && (username.trim().length > 0)
 		&& (apitoken != undefined) && (apitoken.trim().length > 0)
 		&& (email != undefined) && (email.trim().length > 0)) {
 			isDisabled = false;
@@ -69,6 +73,7 @@ function retrieve_storage_info() {
 				var email = jsonObj[incontextqa_options.emailKey];
 
 				if (url != undefined) {
+					console.log("Set url");
 					setTextBoxValue(incontextqa_options.jenkinsUrlInputId, url);
 				}
 
@@ -86,8 +91,6 @@ function retrieve_storage_info() {
 					console.log("Set email");
 					setTextBoxValue(incontextqa_options.emailInputId, email);
 				}
-				isEmailValid(email);
-				enable_button();
 			}
 		}
 	});
@@ -103,10 +106,10 @@ function localizeStrings() {
 }
 
 function save_options() {
-	var url = getTextBoxValue(incontextqa_options.jenkinsUrlInputId);
-	var username = getTextBoxValue(incontextqa_options.userNameInputId);
-	var apitoken = getTextBoxValue(incontextqa_options.apiTokenInputId);
-    var email = getTextBoxValue(incontextqa_options.emailInputId);
+	var url = getTextBoxValue(incontextqa_options.jenkinsUrlInputId).trim();
+	var username = getTextBoxValue(incontextqa_options.userNameInputId).trim();
+	var apitoken = getTextBoxValue(incontextqa_options.apiTokenInputId).trim();
+    var email = getTextBoxValue(incontextqa_options.emailInputId).trim();
 
 	var jsonData = {};
 	jsonData[incontextqa_options.jenkinsUrlKey] = url;
@@ -114,8 +117,6 @@ function save_options() {
 	jsonData[incontextqa_options.apiTokenKey] = apitoken;
     jsonData[incontextqa_options.emailKey] = email;
 	var jsonStr = JSON.stringify(jsonData);
-
-	isEmailValid(email);
 
 	//Syntax for key is [storageKey] since it's a variable
 	chrome.storage.local.set({[incontextqa_options.storageKey]: jsonStr}, function() {
@@ -134,57 +135,59 @@ function test_connection() {
 
 	var url = getTextBoxValue(incontextqa_options.jenkinsUrlInputId).trim();
 
+    document.getElementById(incontextqa_options.labelStatus).className = incontextqa_options.labelStyle;
+
 	//startsWith doesn't work
-	var httpStr = url.substring(0,4);
+	var httpStr = url;
+	if (httpStr.length >= 4) {
+		httpStr = url.substring(0,4);
+	}
+
 	if (httpStr != 'http') {
-		 document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_urlerror");;
-		 return;
+		document.getElementById(incontextqa_options.labelStatus).className = incontextqa_options.labelStyleError;
+		document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_urlerror");
+		return;
 	}
 	var username = getTextBoxValue(incontextqa_options.userNameInputId);
 	var apitoken = getTextBoxValue(incontextqa_options.apiTokenInputId);
-
-
+  var tokenURL;
+	if (typeof String.prototype.endsWith != 'function') {
+	  String.prototype.endsWith = function (str){
+		   return this.slice(-str.length) == str;
+  	};
+  }
+	if(!url.endsWith("/"))
+	  url = url + "/";
+	tokenURL = url + "validateToken";
 	console.log("Authenicating");
+
+	var http = new XMLHttpRequest();
+	var formData = new FormData();
+	formData.append("type", "chrome");
+	formData.append("token", apitoken);
+	http.open("POST", tokenURL, true);
+	http.onreadystatechange = function() {
+			if(http.responseText.includes("Chrome token successfully validated")) {
+				document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_successful_saved");
+				document.getElementById(incontextqa_options.labelStatus).className = incontextqa_options.labelStyle;
+			}else{
+				document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_unsuccessful");
+				document.getElementById(incontextqa_options.labelStatus).className = incontextqa_options.labelStyle;
+			}
+	}
+	http.send(formData);
+
+	chrome.storage.local.set({'serverURL': url});
+	chrome.storage.local.set({'chromeToken': apitoken});
+	var times = "first";
+	chrome.storage.local.set({'times': times});
+  save_options();
 
 	//send message to background.js who can handle cross-origin requests, otherwise a jenkins login screen will be displayed and
 	// the options page will not refreshed
 	//	see - https://developer.chrome.com/extensions/xhr
-	chrome.runtime.sendMessage({type: incontextqa_options.checkCredentialsMsg,
-		urljob: url,
-		username: username,
-		apitoken: apitoken}, function(response) {
-		console.log("Returning from check credentials");
-		if (response == undefined) {
-			console.log("Response not sent");
-		} else {
-			var statusOk = response.statusok;
-			if (isEmpty(statusOk)) {
-				statusOk = 'false';
-			}
-			var statusMsg = response.statusmsg;
-			if (isEmpty(statusMsg)) {
-				statusMsg = "";
-			}
-
-			var statusError = response.statuserror;
-			if (isEmpty(statusError)) {
-				statusError = "";
-			}
-
-			if (statusOk == 'false') {
-				if (isEmpty(statusError))  {
-					document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_unsuccessful");
-				} else {
-					document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_unsuccessful_msg", statusError);
-				}
-			} else {
-				document.getElementById(incontextqa_options.labelStatus).innerText=chrome.i18n.getMessage("options_successful");
-				save_options();
-			}
-		}
-	});
-
 }
+
 
 function getTextBoxValue(id) {
 	return document.getElementById(id).value
@@ -207,19 +210,12 @@ function isEmpty(value) {
 }
 
 function isEmailValid(email) {
-	var isValid = true;
-	if (!isEmpty(email)) {
-		var regex = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
-		isValid = regex.test(email);
-		console.log("Email valid is " + isValid);
-	}
-
-	if (isValid) {
-		document.getElementById(incontextqa_options.emailIconId).src="#";
-		document.getElementById(incontextqa_options.emailIconId).title="";
+	if (isEmpty(email)) {
+		return false;
 	} else {
-		document.getElementById(incontextqa_options.emailIconId).src="/extension/ui/resources/warning-16.png";	
-		document.getElementById(incontextqa_options.emailIconId).title=chrome.i18n.getMessage("options_emailInvalidTitle");
+		//validateEmail.js-method written by Sandeep V. Tamhankar who also wrote the
+		// Apache Common EmailValidator that is used in LRM
+		return jcv_checkEmail(email);
 	}
 }
 
@@ -232,6 +228,9 @@ document.getElementById(incontextqa_options.emailInputId).addEventListener('inpu
 
 
 $(document).ready(function () {
-console.log("Ready");
+    console.log("Ready");
 	retrieve_storage_info();
+	document.getElementById(incontextqa_options.emailInvalid).className = incontextqa_options.labelStyleHidden;;
+	document.getElementById(incontextqa_options.labelStatus).className = incontextqa_options.labelStyleHidden;;
+    document.getElementById(incontextqa_options.authenicateBtnId).disabled = true;
 },true);
